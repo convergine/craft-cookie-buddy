@@ -1,0 +1,22 @@
+{% extends 'convergine-cookiebuddy/_layouts/_settings' %}
+{% import '_includes/forms' as forms %}
+
+{% set title = 'Cookie Buddy' %}
+{% set selectedSubnavItem = 'settings' %}
+
+{% set fullPageForm = true %}
+
+{% block content %}
+    {{ actionInput('plugins/save-plugin-settings') }}
+    {{ hiddenInput('pluginHandle', 'convergine-cookiebuddy') }}
+
+    <div id="fields">
+        {% namespace 'settings' %}
+            {{ forms.lightswitchField({
+                label: "Enable the cookie consent popup"|t('convergine-cookiebuddy'),
+                name: 'isEnabled',
+                on: settings.isEnabled,
+            }) }}
+        {% endnamespace %}
+    </div>
+{% endblock %}

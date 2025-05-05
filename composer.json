@@ -1,0 +1,49 @@
+{
+    "name": "convergine/craft-cookie-buddy",
+    "description": "Cookie Buddy is a CraftCMS 4 and 5 plugin for managing cookie consent and privacy preferences, with support for Google Consent Mode v2.",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craftcms",
+        "cookie-consent",
+        "cookie-buddy",
+        "cookie-management",
+        "gdpr",
+        "consent-mode",
+        "google-consent-mode",
+        "craftcms-plugin",
+        "privacy",
+        "user-consent"
+    ],
+    "support": {
+        "issues": "https://github.com/convergine/craft-cookie-buddy/issues?state=open",
+        "source": "https://github.com/convergine/craft-cookie-buddy",
+        "docs": "https://github.com/convergine/craft-cookie-buddy/blob/master/README.md",
+        "support": {
+            "email": "info@convergine.com"
+        }
+    },
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Convergine Corp.",
+            "homepage": "https://www.convergine.com"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^4.0.0 || ^5.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "convergine\\cookiebuddy\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Cookie Buddy",
+        "handle": "convergine-cookiebuddy",
+        "hasCpSettings": true,
+        "hasCpSection": false,
+        "changelogUrl": "https://github.com/convergine/craft-cookie-buddy/blob/master/CHANGELOG.md",
+        "class": "convergine\\cookiebuddy\\CookieBuddyPlugin"
+    }
+}

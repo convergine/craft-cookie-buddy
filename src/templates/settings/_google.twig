@@ -1,0 +1,26 @@
+{% extends 'convergine-cookiebuddy/_layouts/_settings' %}
+{% import '_includes/forms' as forms %}
+
+{% set title = 'Cookie Buddy' %}
+{% set selectedSubnavItem = 'settings' %}
+
+{% set fullPageForm = true %}
+
+{% block content %}
+    {{ actionInput('plugins/save-plugin-settings') }}
+    {{ hiddenInput('pluginHandle', 'convergine-cookiebuddy') }}
+
+    <div>
+        {% namespace 'settings' %}
+            {% set help = "If enabled, plugin will send consent signals to Google based on visitors selection, which includes analytics_storage, ad_storage, ad_user_data, ad_personalization signals." %}
+            {{ forms.lightswitchField({
+                label: "Send Consent Signals to Google Analytics"|t('convergine-cookiebuddy') ~
+                    '<craft-tooltip placement="right" max-width="700px" text="' ~ help ~ '" delay="0">' ~
+                        '<button type="button" class="t9n-indicator prevent-autofocus" data-icon="help" aria-label="' ~ help ~ '" style="pointer-events: auto;"></button>' ~
+                    '</craft-tooltip>',
+                name: 'sendGtag',
+                on: settings.sendGtag,
+            }) }}
+        {% endnamespace %}
+    </div>
+{% endblock %}

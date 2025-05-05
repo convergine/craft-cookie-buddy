@@ -1,0 +1,33 @@
+{% extends '_layouts/cp' %}
+{% set crumbs = [
+    { label: "Settings"|t('app'), url: url('settings') },
+] %}
+
+{% set selectedSubnavItem = 'settings' %}
+
+{% set navItems = {
+    'settings-heading': { heading: "Settings"|t('convergine-cookiebuddy') },
+    'general': { title: "General"|t('convergine-cookiebuddy') },
+    'google': { title: "Google"|t('convergine-cookiebuddy') },
+    'customization': { title: "Customization"|t('convergine-cookiebuddy') },
+} %}
+
+{% set activeTab = craft.app.request.getSegment(3) ?? 'general' %}
+
+{% block sidebar %}
+    <nav>
+        <ul>
+            {% for key, element in navItems %}
+                {% if element.heading is defined %}
+                    <li class="heading">
+                        <span>{{ element.heading }}</span>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{{ url('convergine-cookiebuddy/settings/'~ key) }}" {{ activeTab == key ? 'class="sel"' }}>{{ element.title }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% set settings = craft.app.getPlugins.getPlugin('convergine-cookiebuddy').settings %}
+
+window.CookieBuddy = {
+    title: "{{ settings.title }}",
+    description: "{{ settings.description }}",
+    footer: "{{ settings.footer }}",
+    consentLayout: "{{ settings.consentLayout }}",
+    consentPosition: "{{ settings.consentPosition }}",
+    consentEqualWeightButtons: {{ settings.consentEqualWeightButtons ? "true" : "false" }},
+    consentFlipButtons: {{ settings.consentFlipButtons ? "true" : "false" }},
+    internalTitle: "{{ settings.internalTitle }}",
+    internalDescription: "{{ settings.internalDescription }}",
+    requiredDescription: "{{ settings.requiredDescription }}",
+    performanceDescription: "{{ settings.performanceDescription }}",
+    targetingDescription: "{{ settings.targetingDescription }}",
+    moreTitle: "{{ settings.moreTitle }}",
+    moreDescription: "{{ settings.moreDescription }}",
+    preferencesLayout: "{{ settings.preferencesLayout }}",
+    preferencesPosition: "{{ settings.preferencesPosition }}",
+    preferencesEqualWeightButtons: {{ settings.preferencesEqualWeightButtons ? "true" : "false" }},
+    preferencesFlipButtons: {{ settings.preferencesFlipButtons ? "true" : "false" }},
+    sendGtag: {{ settings.sendGtag ? "true" : "false" }},
+};

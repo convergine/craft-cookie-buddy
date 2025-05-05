@@ -1,0 +1,156 @@
+{% extends 'convergine-cookiebuddy/_layouts/_settings' %}
+{% import '_includes/forms' as forms %}
+
+{% set title = 'Cookie Buddy' %}
+{% set selectedSubnavItem = 'settings' %}
+
+{% set fullPageForm = true %}
+
+{% set tabs = {
+    'tab01-popup': { label: 'Popup'|t('convergine-cookiebuddy'), url: '#tab01-popup' },
+    'tab02-preferences': { label: 'Preferences'|t('convergine-cookiebuddy'), url: '#tab02-preferences' },
+} %}
+
+{% set selectedTab = craft.app.request.getParam('tab', 'tab01-popup') %}
+
+{% block content %}
+    {{ actionInput('plugins/save-plugin-settings') }}
+    {{ hiddenInput('pluginHandle', 'convergine-cookiebuddy') }}
+
+    <div id="fields">
+        <div id="tab01-popup" class="flex-fields" data-id="tab01-popup" role="tabpanel" aria-labelledby="tab-tab01-popup">
+            {% namespace 'settings' %}
+                {{ forms.textField({
+                    label: "Popup Title"|t('convergine-cookiebuddy'),
+                    name: 'title',
+                    value: settings.title,
+                }) }}
+                {{ forms.textareaField({
+                    label: "Popup Description"|t('convergine-cookiebuddy'),
+                    name: 'description',
+                    value: settings.description,
+                }) }}
+                {{ forms.textareaField({
+                    label: "Footer"|t('convergine-cookiebuddy'),
+                    name: 'footer',
+                    value: settings.footer,
+                }) }}
+                <hr>
+                {{ forms.selectField({
+                    label: "Layout"|t('convergine-contentbuddy'),
+                    name: 'consentLayout',
+                    value: settings.consentLayout,
+                    options: {
+                        "box": "Box",
+                        "box wide": "Box (Wide)",
+                        "box inline": "Box (Inline)",
+                        "cloud": "Cloud",
+                        "cloud inline": "Cloud (Inline)",
+                        "bar": "Bar",
+                        "bar inline": "Bar (Inline)",
+                    }
+                }) }}
+                {{ forms.selectField({
+                    label: "Position"|t('convergine-contentbuddy'),
+                    name: 'consentPosition',
+                    value: settings.consentPosition,
+                    options: {
+                        "top": "Top",
+                        "bottom": "Bottom",
+                        "middle": "Middle",
+                        "top left": "Top Left",
+                        "top center": "Top Center",
+                        "top right": "Top Right",
+                        "middle left": "Middle Left",
+                        "middle center": "Middle Center",
+                        "middle right": "Middle Right",
+                        "bottom left": "Bottom Left",
+                        "bottom center": "Bottom Center",
+                        "bottom right": "Bottom Right",
+                    }
+                }) }}
+                {{ forms.lightswitchField({
+                    label: "Equal Weight Buttons"|t('convergine-cookiebuddy'),
+                    name: 'consentEqualWeightButtons',
+                    on: settings.consentEqualWeightButtons,
+                }) }}
+                {{ forms.lightswitchField({
+                    label: "Flip Buttons"|t('convergine-cookiebuddy'),
+                    name: 'consentFlipButtons',
+                    on: settings.consentFlipButtons,
+                }) }}
+            {% endnamespace %}
+        </div>
+        <div id="tab02-preferences" class="flex-fields hidden" data-id="tab02-preferences" role="tabpanel" aria-labelledby="tab-tab02-preferences">
+            {% namespace 'settings' %}
+                {{ forms.textField({
+                    label: "Internal Title"|t('convergine-cookiebuddy'),
+                    name: 'internalTitle',
+                    value: settings.internalTitle,
+                }) }}
+                {{ forms.textareaField({
+                    label: "Internal Description"|t('convergine-cookiebuddy'),
+                    name: 'internalDescription',
+                    value: settings.internalDescription,
+                }) }}
+                <hr>
+                {{ forms.textareaField({
+                    label: "Required Cookies Description"|t('convergine-cookiebuddy'),
+                    name: 'requiredDescription',
+                    value: settings.requiredDescription,
+                }) }}
+                {{ forms.textareaField({
+                    label: "Performance Cookies Description"|t('convergine-cookiebuddy'),
+                    name: 'performanceDescription',
+                    value: settings.performanceDescription,
+                }) }}
+                {{ forms.textareaField({
+                    label: "Targeting Cookies Description"|t('convergine-cookiebuddy'),
+                    name: 'targetingDescription',
+                    value: settings.targetingDescription,
+                }) }}
+                <hr>
+                {{ forms.textField({
+                    label: "More Title"|t('convergine-cookiebuddy'),
+                    name: 'moreTitle',
+                    value: settings.moreTitle,
+                }) }}
+                {{ forms.textareaField({
+                    label: "More Description"|t('convergine-cookiebuddy'),
+                    name: 'moreDescription',
+                    value: settings.moreDescription,
+                }) }}
+                <hr>
+                {{ forms.selectField({
+                    label: "Layout"|t('convergine-contentbuddy'),
+                    name: 'preferencesLayout',
+                    value: settings.preferencesLayout,
+                    options: {
+                        "box": "Box",
+                        "bar": "Bar",
+                        "bar wide": "Bar (Wide)",
+                    }
+                }) }}
+                {{ forms.selectField({
+                    label: "Position"|t('convergine-contentbuddy'),
+                    name: 'preferencesPosition',
+                    value: settings.preferencesPosition,
+                    options: {
+                        "left": "Left",
+                        "right": "Right",
+                    }
+                }) }}
+                {{ forms.lightswitchField({
+                    label: "Equal Weight Buttons"|t('convergine-cookiebuddy'),
+                    name: 'preferencesEqualWeightButtons',
+                    on: settings.preferencesEqualWeightButtons,
+                }) }}
+                {{ forms.lightswitchField({
+                    label: "Flip Buttons"|t('convergine-cookiebuddy'),
+                    name: 'preferencesFlipButtons',
+                    on: settings.preferencesFlipButtons,
+                }) }}
+            {% endnamespace %}
+        </div>
+    </div>
+{% endblock %}
