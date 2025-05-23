@@ -2,7 +2,7 @@
     "name": "convergine/craft-cookie-buddy",
     "description": "Cookie Buddy is a CraftCMS 4 and 5 plugin for managing cookie consent and privacy preferences, with support for Google Consent Mode v2.",
     "type": "craft-plugin",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "keywords": [
         "craftcms",
         "cookie-consent",
