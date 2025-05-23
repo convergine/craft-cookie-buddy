@@ -47,8 +47,10 @@ class CookieBuddyPlugin extends Plugin {
                 function(Event $event) {
                     $view = Craft::$app->getView();
 
-                    $view->setTemplatesPath(__DIR__ . '/templates');
-                    $variables = $view->renderTemplate('_variables.twig');
+	                $oldTemplatesPath = $view->getTemplatesPath();
+	                $view->setTemplatesPath(__DIR__ . '/templates');
+	                $variables = $view->renderTemplate('_variables.twig');
+	                $view->setTemplatesPath($oldTemplatesPath);
 
                     //minify
                     $variables = preg_replace('/\s+/', ' ', $variables);
