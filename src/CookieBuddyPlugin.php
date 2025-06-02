@@ -5,6 +5,7 @@ use convergine\cookiebuddy\assets\CookieBuddyAssets;
 use convergine\cookiebuddy\models\SettingsModel;
 use Craft;
 use craft\base\Plugin;
+use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\UrlHelper;
 use craft\web\UrlManager;
@@ -43,21 +44,25 @@ class CookieBuddyPlugin extends Plugin {
         if(Craft::$app->getRequest()->getIsSiteRequest() && $settings->isEnabled()) {
             Event::on(
                 View::class,
+                View::EVENT_REGISTER_SITE_TEMPLATE_ROOTS,
+                function(RegisterTemplateRootsEvent $event) {
+                    $event->roots['convergine-cookiebuddy'] = __DIR__ . '/templates';
+                }
+            );
+
+            Event::on(
+                View::class,
                 View::EVENT_BEGIN_BODY,
                 function(Event $event) {
                     $view = Craft::$app->getView();
-
-	                $oldTemplatesPath = $view->getTemplatesPath();
-	                $view->setTemplatesPath(__DIR__ . '/templates');
-	                $variables = $view->renderTemplate('_variables.twig');
-	                $view->setTemplatesPath($oldTemplatesPath);
+                    $variables = $view->renderTemplate('convergine-cookiebuddy/_variables');
 
                     //minify
                     $variables = preg_replace('/\s+/', ' ', $variables);
                     $variables = str_replace([' >', '< ', ' ,'], ['>', '<', ','], $variables);
 
                     $view->registerJs($variables, View::POS_HEAD);
-                    $view->registerAssetBundle(CookieBuddyAssets::class);
+                    $view->registerAssetBundle(CookieBuddyAssets::class, View::POS_END);
                 }
             );
         }
