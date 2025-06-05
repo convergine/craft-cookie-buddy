@@ -1,5 +1,9 @@
 # Cookie Buddy - Changelog
 
+## 1.0.3 - 2025-06-05
+### Fixed
+- Minification code and localhost references have been removed [Issue #1](https://github.com/convergine/craft-cookie-buddy/issues/1)
+
 ## 1.0.2 - 2025-06-02
 ### Fixed
 - Register Cookie Buddy's template root instead of changing the template path, and make sure variables are loaded before the main script [Issue #1](https://github.com/convergine/craft-cookie-buddy/issues/1)

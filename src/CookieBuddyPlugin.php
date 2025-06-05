@@ -56,11 +56,6 @@ class CookieBuddyPlugin extends Plugin {
                 function(Event $event) {
                     $view = Craft::$app->getView();
                     $variables = $view->renderTemplate('convergine-cookiebuddy/_variables');
-
-                    //minify
-                    $variables = preg_replace('/\s+/', ' ', $variables);
-                    $variables = str_replace([' >', '< ', ' ,'], ['>', '<', ','], $variables);
-
                     $view->registerJs($variables, View::POS_HEAD);
                     $view->registerAssetBundle(CookieBuddyAssets::class, View::POS_END);
                 }
