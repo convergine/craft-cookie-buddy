@@ -12,7 +12,7 @@
 
     <div>
         {% namespace 'settings' %}
-            {% set help = "If enabled, plugin will send consent signals to Google based on visitors selection, which includes analytics_storage, ad_storage, ad_user_data, ad_personalization signals." %}
+            {% set help = "If enabled, plugin will send consent signals to Google based on visitors selection, which includes analytics_storage, ad_storage, ad_user_data, ad_personalization signals."|t('convergine-cookiebuddy') %}
             {{ forms.lightswitchField({
                 label: "Send Consent Signals to Google Analytics"|t('convergine-cookiebuddy') ~
                     '<craft-tooltip placement="right" max-width="700px" text="' ~ help ~ '" delay="0">' ~

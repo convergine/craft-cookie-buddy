@@ -1,5 +1,9 @@
 # Cookie Buddy - Changelog
 
+## 1.0.4 - 2025-08-14
+### Added
+- Added multilingual support. [Issue #3](https://github.com/convergine/craft-cookie-buddy/issues/3)
+
 ## 1.0.3 - 2025-06-05
 ### Fixed
 - Minification code and localhost references have been removed [Issue #1](https://github.com/convergine/craft-cookie-buddy/issues/1)

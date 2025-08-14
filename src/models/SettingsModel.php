@@ -1,6 +1,7 @@
 <?php
 namespace convergine\cookiebuddy\models;
 
+use convergine\cookiebuddy\CookieBuddyPlugin;
 use craft\base\Model;
 
 class SettingsModel extends Model {
@@ -32,7 +33,33 @@ class SettingsModel extends Model {
     public bool $preferencesEqualWeightButtons = true;
     public bool $preferencesFlipButtons = false;
 
+	 public array $customMessages = [];
+
     public function isEnabled(): bool {
         return $this->isEnabled;
     }
+
+	 public function getCustomMessage($field,$siteHandle) {
+		 if(isset($this->customMessages[$siteHandle][$field])){
+			 return $this->customMessages[$siteHandle][$field];
+		 }
+		 return $this->$field;
+	 }
+
+	 public function setCustomMessages() {
+		 \Craft::dump('s');
+	 }
+
+	public function setAttributes($values, $safeOnly = true): void
+	{
+		$request = \Craft::$app->getRequest();
+		if(!($request instanceof \craft\web\Request)) {
+			return;
+		}
+		if(\Craft::$app->request->getBodyParam('settings') && isset($values['customMessages'])){
+			$currentSettings = CookieBuddyPlugin::getInstance()->getSettings();
+			$values['customMessages'] = array_merge($currentSettings->customMessages,$values['customMessages']);
+		}
+		parent::setAttributes($values, $safeOnly);
+	}
 }
