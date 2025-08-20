@@ -12,7 +12,7 @@ class SettingsController extends Controller {
 
 	public function init(): void {
 		parent::init();
-		$this->currentSiteHandle = $this->request->getParam( 'site','' );
+		$this->currentSiteHandle = $this->request->getParam( 'site','default' );
 		if ( $site = \Craft::$app->sites->getSiteByHandle( $this->currentSiteHandle ) ) {
 			$this->customMessagesNamespace = "settings[customMessages][{$site->handle}]";
 		}

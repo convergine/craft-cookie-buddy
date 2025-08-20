@@ -1,5 +1,9 @@
 # Cookie Buddy - Changelog
 
+## 1.0.4 - 2025-08-20
+### Fixed
+- Fixed an issue with saving settings on single-language sites. [Issue #4](https://github.com/convergine/craft-cookie-buddy/issues/4)
+
 ## 1.0.4 - 2025-08-14
 ### Added
 - Added multilingual support. [Issue #3](https://github.com/convergine/craft-cookie-buddy/issues/3)
