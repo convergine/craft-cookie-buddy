@@ -1,6 +1,13 @@
 # Cookie Buddy - Changelog
 
-## 1.0.4 - 2025-08-20
+## 1.0.6 - 2025-09-17
+### Added
+- Allow resetting cookies. [Issue #2](https://github.com/convergine/craft-cookie-buddy/issues/2)
+
+### Fixed
+- Fixed an issue with having multiple rows in text. [Issue #5](https://github.com/convergine/craft-cookie-buddy/issues/5)
+
+## 1.0.5 - 2025-08-20
 ### Fixed
 - Fixed an issue with saving settings on single-language sites. [Issue #4](https://github.com/convergine/craft-cookie-buddy/issues/4)
 

@@ -54,11 +54,16 @@ After installation, navigate to the plugin settings and enable the popup/google 
 
 If enabling passing consent information to Google - make sure that your site already has Google Analytics integration code in place, as our plugin does not 
 
+For resetting cookies, you can add a `<button>` with the ID `cookiebuddy-reset` and class `cc-hidden` anywhere in your template. For example:
+```html
+<button id="cookiebuddy-reset" class="cc-hidden">Clear Cookies</button>
+```
+
 ## Roadmap
 
 - **Design Customization Options**: Ability to further modify the look and feel of the consent popups.
 
-- **Translations Suport**: Enable option to translate the popups contents to all languages enabled in Craft instance.
+- **Translations Support**: Enable option to translate the popups contents to all languages enabled in Craft instance.
 
 - **Multi-Site Controls**: Choose which multi-site to display the consent on.
 

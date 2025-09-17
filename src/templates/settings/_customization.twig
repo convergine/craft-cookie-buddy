@@ -50,6 +50,7 @@
                     label: "Popup Description"|t('convergine-cookiebuddy'),
                     name: 'description',
                     value: settings.getCustomMessage('description',currentSiteHandle),
+                    rows:5,
                     translatable:true
                 }) }}
                 {{ forms.textareaField({
@@ -119,24 +120,31 @@
                     label: "Internal Description"|t('convergine-cookiebuddy'),
                     name: 'internalDescription',
                     value: settings.getCustomMessage('internalDescription',currentSiteHandle),
+                    rows:5,
                     translatable:true
                 }) }}
                 <hr>
                 {{ forms.textareaField({
                     label: "Required Cookies Description"|t('convergine-cookiebuddy'),
                     name: 'requiredDescription',
+
+                    rows:5,
                     value: settings.getCustomMessage('requiredDescription',currentSiteHandle),
                     translatable:true
                 }) }}
                 {{ forms.textareaField({
                     label: "Performance Cookies Description"|t('convergine-cookiebuddy'),
                     name: 'performanceDescription',
+
+                    rows:5,
                     value: settings.getCustomMessage('performanceDescription',currentSiteHandle),
                     translatable:true
                 }) }}
                 {{ forms.textareaField({
                     label: "Targeting Cookies Description"|t('convergine-cookiebuddy'),
                     name: 'targetingDescription',
+
+                    rows:5,
                     value: settings.getCustomMessage('targetingDescription',currentSiteHandle),
                     translatable:true
                 }) }}
@@ -150,6 +158,8 @@
                 {{ forms.textareaField({
                     label: "More Description"|t('convergine-cookiebuddy'),
                     name: 'moreDescription',
+
+                    rows:5,
                     value: settings.getCustomMessage('moreDescription',currentSiteHandle),
                     translatable:true
                 }) }}
