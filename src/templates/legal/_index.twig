@@ -1,0 +1,73 @@
+{% extends 'convergine-cookiebuddy/_layouts/_settings' %}
+{% set title = 'Cookie Buddy' %}
+{% set selectedSubnavItem = 'settings' %}
+
+{% set fullPageForm = false %}
+{% block content %}
+
+
+        <div class="flex flex-nowrap" style="align-items: center; justify-content: space-between; margin-bottom: 24px;">
+            <h1>{{ "Privacy Policy"|t('convergine-cookiebuddy') }}</h1>
+            <a href="{{ url('convergine-cookiebuddy/legal/privacy-policy/new') }}" class="btn submit">
+                {{ "Generate New Policy"|t('convergine-cookiebuddy') }}
+            </a>
+        </div>
+
+        {% if documents|length %}
+        <div class="tableview">
+            <table class="data fullwidth">
+                <thead>
+                    <tr>
+                        <th>{{ "Company / Site"|t('convergine-cookiebuddy') }}</th>
+                        <th>{{ "Version"|t('convergine-cookiebuddy') }}</th>
+                        <th>{{ "Language"|t('convergine-cookiebuddy') }}</th>
+                        <th>{{ "Status"|t('convergine-cookiebuddy') }}</th>
+                        <th>{{ "Effective Date"|t('convergine-cookiebuddy') }}</th>
+                        <th>{{ "Created"|t('convergine-cookiebuddy') }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doc in documents %}
+                    <tr>
+                        <td>
+                            <strong>{{ doc.company_name }}</strong><br>
+                            <small class="light">{{ doc.website_url }}</small>
+                        </td>
+                        <td>{{ doc.version }}</td>
+                        <td>{{ doc.language }}</td>
+                        <td>
+                            <span class="status {% if doc.status == 'published' %}green{% elseif doc.status == 'archived' %}{% else %}orange{% endif %}"></span>
+                            {{ doc.status|capitalize }}
+                        </td>
+                        <td>{{ doc.effective_date ? doc.effective_date|date('j M Y') : '—' }}</td>
+                        <td>{{ doc.dateCreated|date('j M Y') }}</td>
+                        <td class="nowrap">
+                            <a href="{{ url('convergine-cookiebuddy/legal/view', {id: doc.id}) }}" class="btn small">
+                                {{ "View"|t('convergine-cookiebuddy') }}
+                            </a>
+                            &nbsp;
+                            <form method="post" style="display:inline" onsubmit="return confirm('{{ "Delete this policy?"|t('convergine-cookiebuddy') }}')">
+                                {{ csrfInput() }}
+                                {{ actionInput('convergine-cookiebuddy/legal-policies/delete') }}
+                                <input type="hidden" name="id" value="{{ doc.id }}">
+                                <button type="submit" class="btn small">{{ "Delete"|t('convergine-cookiebuddy') }}</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="zilch">
+            <p>{{ "No privacy policies generated yet."|t('convergine-cookiebuddy') }}</p>
+            <a href="{{ url('convergine-cookiebuddy/legal/privacy-policy/new') }}" class="btn submit">
+                {{ "Generate Your First Policy"|t('convergine-cookiebuddy') }}
+            </a>
+        </div>
+        {% endif %}
+
+
+
+{% endblock %}

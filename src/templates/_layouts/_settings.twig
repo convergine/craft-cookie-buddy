@@ -10,9 +10,15 @@
     'general': { title: "General"|t('convergine-cookiebuddy') },
     'google': { title: "Google"|t('convergine-cookiebuddy') },
     'customization': { title: "Customization"|t('convergine-cookiebuddy') },
+    'legal-heading': { heading: "Legal Policies"|t('convergine-cookiebuddy') },
+    'privacy-policy': { title: "Privacy Policy"|t('convergine-cookiebuddy'), url: url('convergine-cookiebuddy/legal/privacy-policy') },
 } %}
 
-{% set activeTab = craft.app.request.getSegment(3) ?? 'general' %}
+{# Active tab: all legal/* URLs map to the matching segment(3) key, except
+   view/delete which map back to privacy-policy. #}
+{% set seg2 = craft.app.request.getSegment(2) ?? 'settings' %}
+{% set seg3 = craft.app.request.getSegment(3) ?? 'general' %}
+{% set activeTab = (seg2 == 'legal') ? 'privacy-policy' : seg3 %}
 
 {% block sidebar %}
     <nav>
@@ -23,8 +29,9 @@
                         <span>{{ element.heading }}</span>
                     </li>
                 {% else %}
+                    {% set href = element.url is defined ? element.url : url('convergine-cookiebuddy/settings/' ~ key) %}
                     <li>
-                        <a href="{{ url('convergine-cookiebuddy/settings/'~ key) }}" {{ activeTab == key ? 'class="sel"' }}>{{ element.title }}</a>
+                        <a href="{{ href }}" {{ activeTab == key ? 'class="sel"' }}>{{ element.title }}</a>
                     </li>
                 {% endif %}
             {% endfor %}

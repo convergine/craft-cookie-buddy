@@ -1,0 +1,28 @@
+/*  Wizard  */
+.pp-field-wrap.hidden { display: none !important; }
+.pp-field-wrap { margin-bottom: 1rem; }
+
+/*  View  */
+.meta .data { align-items: center; }
+
+.legal-policy-preview {
+    background: #fff;
+    border: 1px solid #e3e5e8;
+    border-radius: 4px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 2rem;
+    max-height: 600px;
+    overflow-y: auto;
+    font-family: Georgia, serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #3f4d5a;
+}
+.legal-policy-preview h1 { font-size: 1.8em; margin-bottom: .25em; }
+.legal-policy-preview h2 { font-size: 1.2em; margin-top: 1.5em; border-bottom: 1px solid #e3e5e8; padding-bottom: .3em; }
+.legal-policy-preview h3 { font-size: 1em; margin-top: 1em; }
+.legal-policy-preview .policy-meta { color: #8f98a3; font-size: .9em; }
+.legal-policy-preview ul { padding-left: 1.5em; list-style: disc; }
+.legal-policy-preview li { margin-bottom: .4em; }
+.legal-policy-preview a { color: #0d78f2; }
+.legal-policy-preview section { margin-bottom: 40px; }

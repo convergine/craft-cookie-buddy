@@ -3,18 +3,33 @@ namespace convergine\cookiebuddy;
 
 use convergine\cookiebuddy\assets\CookieBuddyAssets;
 use convergine\cookiebuddy\models\SettingsModel;
+use convergine\cookiebuddy\services\PrivacyPolicyService;
+use convergine\cookiebuddy\variables\CookieBuddyVariable;
 use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\UrlHelper;
+use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use craft\web\View;
 use yii\base\Event;
 
+/**
+ * @property PrivacyPolicyService $privacyPolicy
+ */
 class CookieBuddyPlugin extends Plugin {
 	public static string $plugin;
 	public ?string $name = 'Cookie Buddy';
+
+	public static function config(): array
+	{
+		return [
+			'components' => [
+				'privacyPolicy' => PrivacyPolicyService::class,
+			],
+		];
+	}
 
 	public function init() : void {
 		$this->hasCpSection = false;
@@ -33,11 +48,26 @@ class CookieBuddyPlugin extends Plugin {
                 $event->rules['convergine-cookiebuddy/settings/general'] = 'convergine-cookiebuddy/settings/general';
                 $event->rules['convergine-cookiebuddy/settings/google'] = 'convergine-cookiebuddy/settings/google';
                 $event->rules['convergine-cookiebuddy/settings/customization'] = 'convergine-cookiebuddy/settings/customization';
+                $event->rules['convergine-cookiebuddy/legal/privacy-policy'] = 'convergine-cookiebuddy/legal-policies/index';
+                $event->rules['convergine-cookiebuddy/legal/privacy-policy/new'] = 'convergine-cookiebuddy/legal-policies/wizard';
+                $event->rules['convergine-cookiebuddy/legal/generate'] = 'convergine-cookiebuddy/legal-policies/generate';
+                $event->rules['convergine-cookiebuddy/legal/view'] = 'convergine-cookiebuddy/legal-policies/view';
+                $event->rules['convergine-cookiebuddy/legal/delete'] = 'convergine-cookiebuddy/legal-policies/delete';
 			}
 		);
 	}
 
     private function setEvents() : void {
+        Event::on(
+            CraftVariable::class,
+            CraftVariable::EVENT_INIT,
+            function(Event $e) {
+                /** @var CraftVariable $variable */
+                $variable = $e->sender;
+                $variable->set('cookieBuddy', CookieBuddyVariable::class);
+            }
+        );
+
         /** @var $settings SettingsModel */
         $settings = $this->getSettings();
 

@@ -1,0 +1,932 @@
+{#
+privacy-policy.twig
+─────────────────────────────────────────────────────────────────────────────
+Craft CMS Legal Policies Plugin — Privacy Policy Template
+
+Variables expected (from PrivacyPolicyModel):
+  {{ policy.company_name }}
+  {{ policy.website_url }}
+  {{ policy.contact_email }}
+  {{ policy.business_country }}
+  {{ policy.business_address }}
+  {{ policy.effective_date }}
+  {{ policy.policy_version }}
+  {{ policy.jurisdictions }}        — array, e.g. ['gdpr', 'ccpa']
+  {{ policy.data_types }}           — array
+  {{ policy.collection_methods }}   — array
+  {{ policy.processing_purposes }}  — array
+  {{ policy.legal_bases }}          — array
+  {{ policy.third_party_services }} — merged array of all service keys
+  {{ policy.cookie_types }}         — array
+  {{ policy.retention_period }}
+  {{ policy.retention_custom }}
+  {{ policy.security_measures }}    — array
+  {{ policy.rights_granted }}       — array
+  {{ policy.rights_contact_method }}
+  {{ policy.rights_form_url }}
+  {{ policy.has_dpo }}
+  {{ policy.dpo_name }}
+  {{ policy.dpo_email }}
+  {{ policy.serves_children }}
+  {{ policy.shares_data_with_third_parties }}
+  {{ policy.data_transfers_outside_eea }}
+  {{ policy.transfer_safeguards }}  — array
+  {{ policy.supervisory_authority }}
+  {{ policy.notify_changes }}       — array
+  {{ policy.eu_representative }}
+  {{ policy.eu_representative_details }}
+#}
+
+{# ── Helper macros ─────────────────────────────────────────────────────────── #}
+{% macro has(arr, val) %}{{ val in arr ? true : false }}{% endmacro %}
+{% macro jurisdiction(arr, val) %}{{ val in arr ? true : false }}{% endmacro %}
+
+{# Shorthand booleans #}
+{% set isGdpr   = 'gdpr'    in policy.jurisdictions %}
+{% set isCcpa   = 'ccpa'    in policy.jurisdictions %}
+{% set isPipeda = 'pipeda'  in policy.jurisdictions %}
+{% set isAus    = 'aus'     in policy.jurisdictions %}
+
+{# ── Third-party service label map ────────────────────────────────────────── #}
+{% set serviceLabels = {
+    'google_analytics': 'Google Analytics',
+    'ga4':              'Google Analytics 4',
+    'google_tag':       'Google Tag Manager',
+    'mixpanel':         'Mixpanel',
+    'hotjar':           'Hotjar',
+    'clarity':          'Microsoft Clarity',
+    'plausible':        'Plausible Analytics',
+    'fathom':           'Fathom Analytics',
+    'heap':             'Heap',
+    'segment':          'Segment',
+    'google_ads':       'Google Ads',
+    'facebook_pixel':   'Meta (Facebook) Pixel',
+    'linkedin_pixel':   'LinkedIn Insight Tag',
+    'twitter_pixel':    'Twitter / X Pixel',
+    'tiktok_pixel':     'TikTok Pixel',
+    'bing_ads':         'Microsoft Advertising',
+    'stripe':           'Stripe',
+    'paypal':           'PayPal',
+    'square':           'Square',
+    'braintree':        'Braintree',
+    'klarna':           'Klarna',
+    'afterpay':         'Afterpay',
+    'mailchimp':        'Mailchimp',
+    'klaviyo':          'Klaviyo',
+    'hubspot':          'HubSpot',
+    'sendinblue':       'Brevo (Sendinblue)',
+    'convertkit':       'ConvertKit',
+    'activecampaign':   'ActiveCampaign',
+    'mailerlite':       'MailerLite',
+    'salesforce':       'Salesforce',
+    'intercom':         'Intercom',
+    'zendesk':          'Zendesk',
+    'freshdesk':        'Freshdesk',
+    'livechat':         'LiveChat',
+    'tawk':             'Tawk.to',
+    'drift':            'Drift',
+    'google_login':     'Google (OAuth)',
+    'facebook_login':   'Facebook / Meta Login',
+    'twitter_login':    'Twitter / X Login',
+    'apple_login':      'Sign in with Apple',
+    'github_login':     'GitHub',
+    'aws':              'Amazon Web Services (AWS)',
+    'gcp':              'Google Cloud Platform',
+    'azure':            'Microsoft Azure',
+    'cloudflare':       'Cloudflare',
+    'digitalocean':     'DigitalOcean',
+    'vercel':           'Vercel',
+} %}
+
+{# ── Supervisory authority map ─────────────────────────────────────────────── #}
+{% set saLabels = {
+    'ico':    'the Information Commissioner\'s Office (ICO) in the UK'|t('convergine-cookiebuddy'),
+    'dpc':    'the Data Protection Commission (DPC) in Ireland'|t('convergine-cookiebuddy'),
+    'cnil':   'the Commission Nationale de l\'Informatique et des Libertés (CNIL) in France'|t('convergine-cookiebuddy'),
+    'bfdi':   'the Bundesbeauftragte für den Datenschutz und die Informationsfreiheit (BfDI) in Germany'|t('convergine-cookiebuddy'),
+    'agpd':   'the Agencia Española de Protección de Datos (AEPD) in Spain'|t('convergine-cookiebuddy'),
+    'garante':'the Garante per la protezione dei dati personali in Italy'|t('convergine-cookiebuddy'),
+    'ap':     'the Autoriteit Persoonsgegevens (AP) in the Netherlands'|t('convergine-cookiebuddy'),
+    'apd':    'the Autorité de protection des données / Gegevensbeschermingsautoriteit (APD/GBA) in Belgium'|t('convergine-cookiebuddy'),
+    'uodo':   'the Urząd Ochrony Danych Osobowych (UODO) in Poland'|t('convergine-cookiebuddy'),
+    'imy':    'the Integritetsskyddsmyndigheten (IMY) in Sweden'|t('convergine-cookiebuddy'),
+    'dsb':    'the Datenschutzbehörde (DSB) in Austria'|t('convergine-cookiebuddy'),
+    'datatilsynet_dk': 'Datatilsynet in Denmark'|t('convergine-cookiebuddy'),
+    'datatilsynet_no': 'Datatilsynet in Norway'|t('convergine-cookiebuddy'),
+    'cnpd':   'the Comissão Nacional de Proteção de Dados (CNPD) in Portugal'|t('convergine-cookiebuddy'),
+    'uoou':   'the Úřad pro ochranu osobních údajů (ÚOOÚ) in Czech Republic'|t('convergine-cookiebuddy'),
+    'naih':   'the Nemzeti Adatvédelmi és Információszabadság Hatóság (NAIH) in Hungary'|t('convergine-cookiebuddy'),
+    'anspdcp':'the Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP) in Romania'|t('convergine-cookiebuddy'),
+    'tsa':    'the Office of the Data Protection Ombudsman (Tietosuojavaltuutettu) in Finland'|t('convergine-cookiebuddy'),
+    'other':  'the relevant data protection supervisory authority in your country'|t('convergine-cookiebuddy'),
+} %}
+
+{# ── Data type label map ───────────────────────────────────────────────────── #}
+{% set dataTypeLabels = {
+    'name':      'Full name'|t('convergine-cookiebuddy'),
+    'email':     'Email address'|t('convergine-cookiebuddy'),
+    'phone':     'Phone number'|t('convergine-cookiebuddy'),
+    'address':   'Postal / billing address'|t('convergine-cookiebuddy'),
+    'payment':   'Payment / credit card details'|t('convergine-cookiebuddy'),
+    'ip_address':'IP address'|t('convergine-cookiebuddy'),
+    'location':  'Geolocation data'|t('convergine-cookiebuddy'),
+    'device':    'Device & browser information'|t('convergine-cookiebuddy'),
+    'usage':     'Website usage / behavioural data'|t('convergine-cookiebuddy'),
+    'account':   'Account login credentials'|t('convergine-cookiebuddy'),
+    'profile':   'User profile / preferences'|t('convergine-cookiebuddy'),
+    'health':    'Health or medical data'|t('convergine-cookiebuddy'),
+    'biometric': 'Biometric data'|t('convergine-cookiebuddy'),
+    'social':    'Social media profile data'|t('convergine-cookiebuddy'),
+    'ugc':       'User-generated content (comments, reviews)'|t('convergine-cookiebuddy'),
+} %}
+
+{# ── Retention label map ───────────────────────────────────────────────────── #}
+{% set retentionLabels = {
+    'necessary': 'only for as long as necessary to fulfil the purposes described in this policy'|t('convergine-cookiebuddy'),
+    '1_year':    'for up to 1 year from the date of collection'|t('convergine-cookiebuddy'),
+    '2_years':   'for up to 2 years from the date of collection'|t('convergine-cookiebuddy'),
+    '3_years':   'for up to 3 years from the date of collection'|t('convergine-cookiebuddy'),
+    '5_years':   'for up to 5 years from the date of collection'|t('convergine-cookiebuddy'),
+    '7_years':   'for up to 7 years from the date of collection (as required by applicable law)'|t('convergine-cookiebuddy'),
+    'custom':    policy.retention_custom,
+} %}
+
+{# ────────────────────────────────────────────────────────────────────────────
+   DOCUMENT START
+   ──────────────────────────────────────────────────────────────────────────── #}
+<article class="legal-policy privacy-policy">
+
+    <header class="policy-header">
+        <h1>{{ 'Privacy Policy'|t('convergine-cookiebuddy') }}</h1>
+        <p class="policy-meta">
+            <strong>{{ policy.company_name }}</strong><br>
+            {{ 'Last updated:'|t('convergine-cookiebuddy') }}
+            <time datetime="{{ policy.effective_date|date('Y-m-d') }}">{{ policy.effective_date|date('j F Y') }}</time>
+            {% if policy.policy_version %} &nbsp;·&nbsp; {{ 'Version'|t('convergine-cookiebuddy') }} {{ policy.policy_version }}{% endif %}
+        </p>
+    </header>
+
+    {# ── 1. Introduction ──────────────────────────────────────────────────────── #}
+    <section id="introduction">
+        <h2>{{ '1. Introduction'|t('convergine-cookiebuddy') }}</h2>
+        <p>
+            {{ 'This Privacy Policy explains how'|t('convergine-cookiebuddy') }}
+            <strong>{{ policy.company_name }}</strong>
+            {{ '("we", "us", or "our") collects, uses, and protects your personal information when you visit'|t('convergine-cookiebuddy') }}
+            <a href="{{ policy.website_url }}">{{ policy.website_url }}</a>
+            {{ '(the "Website") or otherwise interact with our services.'|t('convergine-cookiebuddy') }}
+        </p>
+        <p>
+            {{ 'We are committed to protecting your privacy and handling your personal data in an open and transparent manner. Please read this policy carefully to understand how we use your information.'|t('convergine-cookiebuddy') }}
+        </p>
+        {% set controllerName = policy.company_legal_name ? policy.company_legal_name : policy.company_name %}
+        {% if controllerName != policy.company_name %}
+            <p>
+                {{ 'Registered as:'|t('convergine-cookiebuddy') }} <strong>{{ controllerName }}</strong>
+            </p>
+        {% endif %}
+        {% if policy.business_address %}
+            <p>
+                <strong>{{ 'Our registered address is:'|t('convergine-cookiebuddy') }}</strong><br>
+                {{ policy.business_address|nl2br }}
+            </p>
+        {% endif %}
+        <p>
+            {{ 'If you have any questions about this policy or how we handle your data, please contact us at'|t('convergine-cookiebuddy') }}
+            <a href="mailto:{{ policy.contact_email }}">{{ policy.contact_email }}</a>.
+        </p>
+    </section>
+
+    {# ── 2. Data Controller ───────────────────────────────────────────────────── #}
+    {% if isGdpr %}
+        {% set controllerName = policy.company_legal_name ? policy.company_legal_name : policy.company_name %}
+        <section id="data-controller">
+            <h2>{{ '2. Data Controller'|t('convergine-cookiebuddy') }}</h2>
+            <p>
+                {{ 'For the purposes of the General Data Protection Regulation (GDPR) and UK GDPR,'|t('convergine-cookiebuddy') }}
+                <strong>{{ controllerName }}</strong>
+                {{ 'is the data controller responsible for your personal data collected through this Website.'|t('convergine-cookiebuddy') }}
+                {% if policy.business_address %}
+                    {{ 'Our registered address is'|t('convergine-cookiebuddy') }}: {{ policy.business_address|replace({"\n": ', ', "\r": ''}) }}.
+                {% endif %}
+            </p>
+            {% if policy.has_dpo %}
+                <p>
+                    {{ 'We have appointed a Data Protection Officer (DPO). You can contact our DPO at:'|t('convergine-cookiebuddy') }}
+                </p>
+                <ul>
+                    <li><strong>{{ 'Name:'|t('convergine-cookiebuddy') }}</strong> {{ policy.dpo_name }}</li>
+                    <li><strong>{{ 'Email:'|t('convergine-cookiebuddy') }}</strong> <a href="mailto:{{ policy.dpo_email }}">{{ policy.dpo_email }}</a></li>
+                </ul>
+            {% else %}
+                <p>
+                    {{ 'We have determined that the appointment of a Data Protection Officer is not required based on the nature and scale of our processing activities.'|t('convergine-cookiebuddy') }}
+                </p>
+            {% endif %}
+            {% if policy.eu_representative and policy.eu_representative_details %}
+                <p>
+                    {{ 'Our EU/UK representative for the purposes of data protection law is:'|t('convergine-cookiebuddy') }}<br>
+                    {{ policy.eu_representative_details|nl2br }}
+                </p>
+            {% endif %}
+        </section>
+    {% endif %}
+
+    {# ── 3. What Data We Collect ──────────────────────────────────────────────── #}
+    <section id="data-we-collect">
+        <h2>{{ isGdpr ? '3. What Personal Data We Collect'|t('convergine-cookiebuddy') : '2. What Personal Data We Collect'|t('convergine-cookiebuddy') }}</h2>
+        <p>
+            {{ 'We collect and process the following categories of personal information:'|t('convergine-cookiebuddy') }}
+        </p>
+        <ul>
+            {% for type in policy.data_types %}
+                {% if dataTypeLabels[type] is defined %}
+                    <li>{{ dataTypeLabels[type] }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        {% if policy.collects_special_category_data and policy.special_category_types|length > 0 %}
+            {% set specialCategoryLabels = {
+                'racial_ethnic': 'racial or ethnic origin'|t('convergine-cookiebuddy'),
+                'political':     'political opinions'|t('convergine-cookiebuddy'),
+                'religious':     'religious or philosophical beliefs'|t('convergine-cookiebuddy'),
+                'trade_union':   'trade union membership'|t('convergine-cookiebuddy'),
+                'health':        'health or medical data'|t('convergine-cookiebuddy'),
+                'genetic':       'genetic data'|t('convergine-cookiebuddy'),
+                'biometric':     'biometric data (used for unique identification)'|t('convergine-cookiebuddy'),
+                'sex_life':      'data concerning sex life or sexual orientation'|t('convergine-cookiebuddy'),
+            } %}
+            <h3>{{ 'Special Category Data'|t('convergine-cookiebuddy') }}</h3>
+            <p>
+                {{ 'We also collect and process the following categories of special (sensitive) personal data, which requires explicit consent or another specific legal basis under GDPR Article 9:'|t('convergine-cookiebuddy') }}
+            </p>
+            <ul>
+                {% for cat in policy.special_category_types %}
+                    {% if specialCategoryLabels[cat] is defined %}
+                        <li>{{ specialCategoryLabels[cat]|capitalize }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            <p>
+                {{ 'We process this data only where strictly necessary and with appropriate safeguards in place. Where required, we will seek your explicit consent before collecting such data.'|t('convergine-cookiebuddy') }}
+            </p>
+        {% endif %}
+
+        <h3>{{ 'How we collect your data'|t('convergine-cookiebuddy') }}</h3>
+        <p>{{ 'We collect your personal data in the following ways:'|t('convergine-cookiebuddy') }}</p>
+        <ul>
+            {% if 'contact_form' in policy.collection_methods %}
+                <li><strong>{{ 'Contact and enquiry forms'|t('convergine-cookiebuddy') }}</strong> — {{ 'when you submit a message or enquiry through our website.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'registration' in policy.collection_methods %}
+                <li><strong>{{ 'Account registration'|t('convergine-cookiebuddy') }}</strong> — {{ 'when you create an account on our website.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'checkout' in policy.collection_methods %}
+                <li><strong>{{ 'Checkout and purchases'|t('convergine-cookiebuddy') }}</strong> — {{ 'when you complete a purchase or transaction.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'newsletter' in policy.collection_methods %}
+                <li><strong>{{ 'Newsletter sign-up'|t('convergine-cookiebuddy') }}</strong> — {{ 'when you subscribe to receive updates or marketing communications.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'cookies' in policy.collection_methods %}
+                <li><strong>{{ 'Cookies and tracking technologies'|t('convergine-cookiebuddy') }}</strong> — {{ 'automatically as you browse our website (see our'|t('convergine-cookiebuddy') }} <a href="#cookies">{{ 'Cookies section'|t('convergine-cookiebuddy') }}</a>).</li>
+            {% endif %}
+            {% if 'analytics' in policy.collection_methods %}
+                <li><strong>{{ 'Analytics tools'|t('convergine-cookiebuddy') }}</strong> — {{ 'your device and usage data is automatically recorded when you visit our website.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'social_login' in policy.collection_methods %}
+                <li><strong>{{ 'Social media login'|t('convergine-cookiebuddy') }}</strong> — {{ 'when you choose to sign in using a third-party account such as Google or Facebook.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'survey' in policy.collection_methods %}
+                <li><strong>{{ 'Surveys and questionnaires'|t('convergine-cookiebuddy') }}</strong> — {{ 'when you participate in feedback surveys.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'live_chat' in policy.collection_methods %}
+                <li><strong>{{ 'Live chat and support'|t('convergine-cookiebuddy') }}</strong> — {{ 'when you contact us through our live chat or help desk.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'third_party' in policy.collection_methods %}
+                <li><strong>{{ 'Third-party sources'|t('convergine-cookiebuddy') }}</strong> —
+                    {% if policy.third_party_source_types|length > 0 %}
+                        {% set thirdPartySourceLabels = {
+                            'advertising_networks': 'advertising networks and data brokers'|t('convergine-cookiebuddy'),
+                            'social_platforms':     'social media platforms'|t('convergine-cookiebuddy'),
+                            'business_partners':    'business partners and resellers'|t('convergine-cookiebuddy'),
+                            'public_records':       'publicly available sources'|t('convergine-cookiebuddy'),
+                            'analytics_providers':  'analytics and measurement providers'|t('convergine-cookiebuddy'),
+                        } %}
+                        {% set sourceList = [] %}
+                        {% for s in policy.third_party_source_types %}
+                            {% if thirdPartySourceLabels[s] is defined %}
+                                {% set sourceList = sourceList|merge([thirdPartySourceLabels[s]]) %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ 'we may receive data about you from'|t('convergine-cookiebuddy') }} {{ sourceList|join(', ') }}.
+                    {% else %}
+                        {{ 'we may receive data about you from our business partners or service providers.'|t('convergine-cookiebuddy') }}
+                    {% endif %}
+                </li>
+            {% endif %}
+        </ul>
+
+        {% if policy.serves_children %}
+            <h3>{{ "Children's Data"|t('convergine-cookiebuddy') }}</h3>
+            <p>
+                {{ "Our website may collect data from or about children under the age of 13. We comply with the Children's Online Privacy Protection Act (COPPA) where applicable. Where required, we obtain verifiable parental consent before collecting any personal information from children. Parents may review, delete, or refuse further collection of their child's information by contacting us at"|t('convergine-cookiebuddy') }}
+                <a href="mailto:{{ policy.contact_email }}">{{ policy.contact_email }}</a>.
+            </p>
+        {% else %}
+            <p>
+                {{ 'Our website is not directed at children under the age of 13 (or 16 where required by law), and we do not knowingly collect personal data from children. If you believe we have inadvertently collected information from a child, please contact us immediately.'|t('convergine-cookiebuddy') }}
+            </p>
+        {% endif %}
+    </section>
+
+    {# ── 4. Why We Use Your Data ──────────────────────────────────────────────── #}
+    <section id="data-use">
+        <h2>{{ isGdpr ? '4. How and Why We Use Your Data'|t('convergine-cookiebuddy') : '3. How and Why We Use Your Data'|t('convergine-cookiebuddy') }}</h2>
+        <p>{{ 'We use your personal data for the following purposes:'|t('convergine-cookiebuddy') }}</p>
+        <ul>
+            {% if 'service_delivery' in policy.processing_purposes %}
+                <li><strong>{{ 'Providing our services'|t('convergine-cookiebuddy') }}</strong> — {{ 'to operate and maintain the website and deliver the services you request.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'orders' in policy.processing_purposes %}
+                <li><strong>{{ 'Processing orders and payments'|t('convergine-cookiebuddy') }}</strong> — {{ 'to process transactions, send confirmations, and fulfil purchases.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'support' in policy.processing_purposes %}
+                <li><strong>{{ 'Customer support'|t('convergine-cookiebuddy') }}</strong> — {{ 'to respond to your enquiries, resolve issues, and provide assistance.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'marketing_email' in policy.processing_purposes %}
+                <li><strong>{{ 'Marketing communications'|t('convergine-cookiebuddy') }}</strong> — {{ 'to send you newsletters, promotions, and updates about our services (where you have opted in or where we have a legitimate interest to do so).'|t('convergine-cookiebuddy') }}
+                </li>
+            {% endif %}
+            {% if 'personalisation' in policy.processing_purposes %}
+                <li><strong>{{ 'Personalisation'|t('convergine-cookiebuddy') }}</strong> — {{ 'to tailor the website experience to your preferences and interests.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'analytics_improve' in policy.processing_purposes %}
+                <li><strong>{{ 'Analytics and improvement'|t('convergine-cookiebuddy') }}</strong> — {{ 'to understand how visitors use our website and to improve its content and functionality.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'legal_compliance' in policy.processing_purposes %}
+                <li><strong>{{ 'Legal compliance'|t('convergine-cookiebuddy') }}</strong> — {{ 'to comply with our legal and regulatory obligations.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'fraud_prevention' in policy.processing_purposes %}
+                <li><strong>{{ 'Fraud prevention and security'|t('convergine-cookiebuddy') }}</strong> — {{ 'to detect, prevent, and investigate fraud, abuse, and other unlawful activity.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'research' in policy.processing_purposes %}
+                <li><strong>{{ 'Research and development'|t('convergine-cookiebuddy') }}</strong> — {{ 'to conduct research and develop new features and services.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'advertising' in policy.processing_purposes %}
+                <li><strong>{{ 'Targeted advertising'|t('convergine-cookiebuddy') }}</strong> — {{ 'to deliver relevant advertisements based on your interests and browsing behaviour.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+        </ul>
+
+        {% if isGdpr %}
+            <h3>{{ 'Our Legal Bases for Processing (GDPR)'|t('convergine-cookiebuddy') }}</h3>
+            <p>
+                {{ 'Under the GDPR, we must have a lawful basis for processing your personal data. We rely on the following legal bases:'|t('convergine-cookiebuddy') }}
+            </p>
+            {% set purposeLabelsMap = {
+                'service_delivery':  'Providing and operating the website/service'|t('convergine-cookiebuddy'),
+                'orders':            'Processing orders and payments'|t('convergine-cookiebuddy'),
+                'support':           'Customer support'|t('convergine-cookiebuddy'),
+                'marketing_email':   'Sending marketing / promotional emails'|t('convergine-cookiebuddy'),
+                'personalisation':   'Personalising user experience'|t('convergine-cookiebuddy'),
+                'analytics_improve': 'Analytics to improve the website'|t('convergine-cookiebuddy'),
+                'legal_compliance':  'Legal and regulatory compliance'|t('convergine-cookiebuddy'),
+                'fraud_prevention':  'Fraud prevention and security'|t('convergine-cookiebuddy'),
+                'research':          'Research and development'|t('convergine-cookiebuddy'),
+                'advertising':       'Targeted / behavioural advertising'|t('convergine-cookiebuddy'),
+            } %}
+            {% set basisDescriptions = {
+                'consent':     'Consent'|t('convergine-cookiebuddy') ~ ' — ' ~ 'you have given clear consent for us to process your data for a specific purpose (e.g. marketing emails, non-essential cookies). You can withdraw your consent at any time.'|t('convergine-cookiebuddy'),
+                'contract':    'Contract'|t('convergine-cookiebuddy') ~ ' — ' ~ 'processing is necessary to perform a contract with you, or to take steps at your request before entering into a contract (e.g. processing a purchase).'|t('convergine-cookiebuddy'),
+                'legal_oblig': 'Legal obligation'|t('convergine-cookiebuddy') ~ ' — ' ~ 'processing is necessary to comply with a legal obligation (e.g. retaining financial records for tax purposes).'|t('convergine-cookiebuddy'),
+                'vital':       'Vital interests'|t('convergine-cookiebuddy') ~ ' — ' ~ "processing is necessary to protect someone's life."|t('convergine-cookiebuddy'),
+                'public_task': 'Public task'|t('convergine-cookiebuddy') ~ ' — ' ~ 'processing is necessary to perform a task in the public interest.'|t('convergine-cookiebuddy'),
+                'legit':       'Legitimate interests'|t('convergine-cookiebuddy') ~ ' — ' ~ 'processing is necessary for our legitimate interests or those of a third party, provided those interests are not overridden by your rights and interests.'|t('convergine-cookiebuddy'),
+            } %}
+            {% if policy.legal_bases_map|length > 0 %}
+                <table style="width:100%; border-collapse:collapse; margin:1rem 0;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left; padding:.5rem .75rem; border-bottom:2px solid #ccc; width:45%;">{{ 'Processing Purpose'|t('convergine-cookiebuddy') }}</th>
+                            <th style="text-align:left; padding:.5rem .75rem; border-bottom:2px solid #ccc;">{{ 'Legal Basis (GDPR Article 6)'|t('convergine-cookiebuddy') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for purpose, basis in policy.legal_bases_map %}
+                            {% if purposeLabelsMap[purpose] is defined and basisDescriptions[basis] is defined %}
+                                <tr>
+                                    <td style="padding:.5rem .75rem; border-bottom:1px solid #eee; vertical-align:top;">{{ purposeLabelsMap[purpose] }}</td>
+                                    <td style="padding:.5rem .75rem; border-bottom:1px solid #eee; vertical-align:top;">{{ basisDescriptions[basis] }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                {# Fallback: list all purposes with a generic basis note #}
+                <ul>
+                    {% for purpose in policy.processing_purposes %}
+                        {% if purposeLabelsMap[purpose] is defined %}
+                            <li><strong>{{ purposeLabelsMap[purpose] }}</strong></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+                <p>{{ 'We process the above data on the basis of our legitimate interests, contractual necessity, legal obligations, or your consent, as applicable to each activity.'|t('convergine-cookiebuddy') }}</p>
+            {% endif %}
+        {% endif %}
+
+        {% if policy.uses_automated_decisions %}
+            <h3>{{ 'Automated Decision-Making and Profiling'|t('convergine-cookiebuddy') }}</h3>
+            <p>
+                {{ 'We use automated processing and profiling to help deliver our services.'|t('convergine-cookiebuddy') }}
+                {% if policy.automated_decision_details %}
+                    {{ policy.automated_decision_details }}
+                {% else %}
+                    {{ 'This may include personalising content and recommendations based on your behaviour and preferences.'|t('convergine-cookiebuddy') }}
+                {% endif %}
+            </p>
+            <p>
+                {{ 'Where automated decisions produce legal or similarly significant effects on you, you have the right to request human review of that decision, to express your point of view, and to contest the outcome. Please contact us at'|t('convergine-cookiebuddy') }}
+                <a href="mailto:{{ policy.contact_email }}">{{ policy.contact_email }}</a>
+                {{ 'to exercise this right.'|t('convergine-cookiebuddy') }}
+            </p>
+        {% endif %}
+
+        {% if 'marketing_email' in policy.processing_purposes and policy.marketing_unsubscribe_method %}
+            <h3>{{ 'Opting Out of Marketing Communications'|t('convergine-cookiebuddy') }}</h3>
+            <p>
+                {{ 'You can unsubscribe from our marketing emails at any time.'|t('convergine-cookiebuddy') }}
+                {% if policy.marketing_unsubscribe_method == 'link' %}
+                    {{ 'Every marketing email we send includes an unsubscribe link at the bottom. Click it to be removed from our mailing list immediately.'|t('convergine-cookiebuddy') }}
+                {% elseif policy.marketing_unsubscribe_method == 'reply' %}
+                    {{ 'Simply reply to any marketing email with the word "Unsubscribe" or "STOP" and we will remove you from our mailing list.'|t('convergine-cookiebuddy') }}
+                {% elseif policy.marketing_unsubscribe_method == 'email_us' %}
+                    {{ 'Send us an email at'|t('convergine-cookiebuddy') }}
+                    <a href="mailto:{{ policy.contact_email }}">{{ policy.contact_email }}</a>
+                    {{ 'requesting to be removed from our marketing list.'|t('convergine-cookiebuddy') }}
+                {% elseif policy.marketing_unsubscribe_method == 'account' %}
+                    {{ 'You can manage your communication preferences at any time through your account settings or profile page.'|t('convergine-cookiebuddy') }}
+                {% endif %}
+                {{ 'Unsubscribing from marketing communications will not affect transactional or service-related messages.'|t('convergine-cookiebuddy') }}
+            </p>
+        {% endif %}
+    </section>
+
+    {# ── 5. Third-Party Services ──────────────────────────────────────────────── #}
+    {% set allServices = policy.thirdPartyServices %}
+    {% if allServices|length > 0 or policy.other_third_parties %}
+        <section id="third-parties">
+            <h2>{{ isGdpr ? '5. Third-Party Services We Use'|t('convergine-cookiebuddy') : '4. Third-Party Services We Use'|t('convergine-cookiebuddy') }}</h2>
+            <p>
+                {{ 'We use trusted third-party services to help us operate our website and deliver our services. These providers may have access to your personal data to the extent necessary to perform their functions, and are contractually obligated to protect it.'|t('convergine-cookiebuddy') }}
+            </p>
+
+            {# Analytics #}
+            {% set analyticsServices = policy.analytics_services ?? [] %}
+            {% if analyticsServices|length > 0 %}
+                <h3>{{ 'Analytics & Performance'|t('convergine-cookiebuddy') }}</h3>
+                <p>{{ 'We use the following tools to understand how visitors use our website:'|t('convergine-cookiebuddy') }}</p>
+                <ul>
+                    {% for svc in analyticsServices %}
+                        <li><strong>{{ serviceLabels[svc] ?? svc }}</strong></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {# Advertising #}
+            {% set adServices = policy.advertising_services ?? [] %}
+            {% if adServices|length > 0 %}
+                <h3>{{ 'Advertising & Remarketing'|t('convergine-cookiebuddy') }}</h3>
+                <p>{{ 'We use the following tools to serve and measure advertising:'|t('convergine-cookiebuddy') }}</p>
+                <ul>
+                    {% for svc in adServices %}
+                        <li><strong>{{ serviceLabels[svc] ?? svc }}</strong></li>
+                    {% endfor %}
+                </ul>
+                <p>
+                    {{ 'You may opt out of interest-based advertising by visiting'|t('convergine-cookiebuddy') }}
+                    <a href="https://youronlinechoices.eu" target="_blank" rel="noopener">Your Online Choices</a>
+                    {{ 'or'|t('convergine-cookiebuddy') }} <a href="https://optout.aboutads.info" target="_blank" rel="noopener">AboutAds.info</a>.
+                </p>
+            {% endif %}
+
+            {# Payments #}
+            {% set paymentServices = policy.payment_services ?? [] %}
+            {% if paymentServices|length > 0 %}
+                <h3>{{ 'Payment Processing'|t('convergine-cookiebuddy') }}</h3>
+                <p>
+                    {{ 'We use the following payment processors. Payment data is handled directly by these providers and is subject to their own privacy policies:'|t('convergine-cookiebuddy') }}
+                </p>
+                <ul>
+                    {% for svc in paymentServices %}
+                        <li><strong>{{ serviceLabels[svc] ?? svc }}</strong></li>
+                    {% endfor %}
+                </ul>
+                <p>{{ 'We do not store your full card details on our servers.'|t('convergine-cookiebuddy') }}</p>
+            {% endif %}
+
+            {# Email & CRM #}
+            {% set emailServices = policy.email_services ?? [] %}
+            {% if emailServices|length > 0 %}
+                <h3>{{ 'Email Marketing & CRM'|t('convergine-cookiebuddy') }}</h3>
+                <p>{{ 'We use the following tools to manage communications and customer relationships:'|t('convergine-cookiebuddy') }}</p>
+                <ul>
+                    {% for svc in emailServices %}
+                        <li><strong>{{ serviceLabels[svc] ?? svc }}</strong></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {# Support #}
+            {% set supportServices = policy.support_services ?? [] %}
+            {% if supportServices|length > 0 %}
+                <h3>{{ 'Customer Support & Chat'|t('convergine-cookiebuddy') }}</h3>
+                <ul>
+                    {% for svc in supportServices %}
+                        <li><strong>{{ serviceLabels[svc] ?? svc }}</strong></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {# Social / OAuth #}
+            {% set socialServices = policy.social_services ?? [] %}
+            {% if socialServices|length > 0 %}
+                <h3>{{ 'Social Media & Login'|t('convergine-cookiebuddy') }}</h3>
+                <p>{{ 'Our website integrates with the following social platforms:'|t('convergine-cookiebuddy') }}</p>
+                <ul>
+                    {% for svc in socialServices %}
+                        <li><strong>{{ serviceLabels[svc] ?? svc }}</strong></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {# Hosting #}
+            {% set hostingServices = policy.hosting_services ?? [] %}
+            {% if hostingServices|length > 0 %}
+                <h3>{{ 'Hosting & Infrastructure'|t('convergine-cookiebuddy') }}</h3>
+                <p>{{ 'Our website and data are hosted using:'|t('convergine-cookiebuddy') }}</p>
+                <ul>
+                    {% for svc in hostingServices %}
+                        <li><strong>{{ serviceLabels[svc] ?? svc }}</strong></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if policy.other_third_parties %}
+                <h3>{{ 'Other Services'|t('convergine-cookiebuddy') }}</h3>
+                <p>{{ policy.other_third_parties }}</p>
+            {% endif %}
+
+            {% if policy.shares_data_with_third_parties %}
+                <h3>{{ 'Sharing and Sale of Data'|t('convergine-cookiebuddy') }}</h3>
+                <p>
+                    {{ 'We may share your personal information with third-party partners for the purposes described in this policy, including advertising and analytics.'|t('convergine-cookiebuddy') }}
+                    {% if isCcpa %}
+                        {{ 'As defined under the California Consumer Privacy Act (CCPA/CPRA), some of these disclosures may constitute a "sale" or "sharing" of personal information. California residents have the right to opt out of such sale or sharing —'|t('convergine-cookiebuddy') }}
+                        {{ 'see'|t('convergine-cookiebuddy') }} <a href="#california-rights">{{ 'Your California Privacy Rights'|t('convergine-cookiebuddy') }}</a> {{ 'below.'|t('convergine-cookiebuddy') }}
+                    {% endif %}
+                </p>
+            {% else %}
+                <p>{{ 'We do not sell, rent, or trade your personal information to third parties for their own marketing purposes.'|t('convergine-cookiebuddy') }}</p>
+            {% endif %}
+        </section>
+    {% endif %}
+
+    {# ── 6. Cookies ───────────────────────────────────────────────────────────── #}
+    {% if policy.uses_cookies %}
+        <section id="cookies">
+            <h2>{{ isGdpr ? '6. Cookies & Tracking Technologies'|t('convergine-cookiebuddy') : '5. Cookies & Tracking Technologies'|t('convergine-cookiebuddy') }}</h2>
+            <p>
+                {{ 'Our website uses cookies and similar tracking technologies to enhance your experience, analyse site usage, and (where applicable) deliver relevant advertising. A cookie is a small text file placed on your device when you visit a website.'|t('convergine-cookiebuddy') }}
+            </p>
+
+            <h3>{{ 'Types of cookies we use'|t('convergine-cookiebuddy') }}</h3>
+            <ul>
+                {% if 'essential' in policy.cookie_types %}
+                    <li>
+                        <strong>{{ 'Essential cookies'|t('convergine-cookiebuddy') }}</strong> — {{ 'These are necessary for the website to function and cannot be disabled. They enable core features such as security, session management, and accessibility.'|t('convergine-cookiebuddy') }}
+                    </li>
+                {% endif %}
+                {% if 'functional' in policy.cookie_types %}
+                    <li>
+                        <strong>{{ 'Functional cookies'|t('convergine-cookiebuddy') }}</strong> — {{ 'These allow us to remember your preferences (such as language or region) and provide enhanced, personalised features.'|t('convergine-cookiebuddy') }}
+                    </li>
+                {% endif %}
+                {% if 'analytics' in policy.cookie_types %}
+                    <li>
+                        <strong>{{ 'Analytics cookies'|t('convergine-cookiebuddy') }}</strong> — {{ 'These help us understand how visitors interact with our website by collecting and reporting anonymous usage information.'|t('convergine-cookiebuddy') }}
+                    </li>
+                {% endif %}
+                {% if 'marketing' in policy.cookie_types %}
+                    <li>
+                        <strong>{{ 'Marketing cookies'|t('convergine-cookiebuddy') }}</strong> — {{ 'These are used to track you across websites to deliver ads that are relevant to your interests.'|t('convergine-cookiebuddy') }}
+                    </li>
+                {% endif %}
+                {% if 'social' in policy.cookie_types %}
+                    <li>
+                        <strong>{{ 'Social media cookies'|t('convergine-cookiebuddy') }}</strong> — {{ 'Set by social media platforms to enable sharing and interaction with their services from our website.'|t('convergine-cookiebuddy') }}
+                    </li>
+                {% endif %}
+            </ul>
+
+            {% if policy.cookie_consent_method == 'banner' %}
+                <p>
+                    {{ 'When you first visit our website, you will be presented with a cookie consent banner that allows you to accept or decline non-essential cookies. You can change your preferences at any time by clicking the "Cookie Settings" link in our website footer.'|t('convergine-cookiebuddy') }}
+                </p>
+            {% elseif policy.cookie_consent_method == 'implied' %}
+                <p>
+                    {{ 'By continuing to browse our website, you consent to our use of cookies in accordance with this policy. You may disable cookies in your browser settings at any time, but this may affect certain website functionality.'|t('convergine-cookiebuddy') }}
+                </p>
+            {% endif %}
+
+            <p>
+                {{ 'Most browsers allow you to refuse or delete cookies through their settings. For more information, visit'|t('convergine-cookiebuddy') }}
+                <a href="https://www.aboutcookies.org" target="_blank" rel="noopener">aboutcookies.org</a>.
+            </p>
+        </section>
+    {% endif %}
+
+    {# ── 7. Data Retention ────────────────────────────────────────────────────── #}
+    <section id="data-retention">
+        <h2>{{ isGdpr ? '7. How Long We Keep Your Data'|t('convergine-cookiebuddy') : '6. How Long We Keep Your Data'|t('convergine-cookiebuddy') }}</h2>
+        <p>
+            {{ 'We retain your personal data'|t('convergine-cookiebuddy') }}
+            {{ retentionLabels[policy.retention_period] ?? 'only for as long as necessary'|t('convergine-cookiebuddy') }}.
+            {{ 'When your data is no longer required, we securely delete or anonymise it.'|t('convergine-cookiebuddy') }}
+        </p>
+        <p>
+            {{ 'In some cases, we may be required to retain data for longer periods to comply with legal obligations (for example, financial records for tax or accounting purposes).'|t('convergine-cookiebuddy') }}
+        </p>
+    </section>
+
+    {# ── 8. Data Security ─────────────────────────────────────────────────────── #}
+    <section id="data-security">
+        <h2>{{ isGdpr ? '8. How We Protect Your Data'|t('convergine-cookiebuddy') : '7. How We Protect Your Data'|t('convergine-cookiebuddy') }}</h2>
+        <p>
+            {{ 'We take the security of your personal data seriously and implement appropriate technical and organisational measures to protect it from unauthorised access, loss, or disclosure, including:'|t('convergine-cookiebuddy') }}
+        </p>
+        <ul>
+            {% if 'ssl' in policy.security_measures %}
+                <li>{{ 'SSL/TLS encryption for all data transmitted between your browser and our servers (HTTPS)'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'encryption' in policy.security_measures %}
+                <li>{{ 'Encryption of personal data stored at rest'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'access_control' in policy.security_measures %}
+                <li>{{ 'Strict access controls and multi-factor authentication for staff accessing personal data'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'firewalls' in policy.security_measures %}
+                <li>{{ 'Firewalls, intrusion detection, and monitoring systems'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'audits' in policy.security_measures %}
+                <li>{{ 'Regular security reviews and vulnerability assessments'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'staff_training' in policy.security_measures %}
+                <li>{{ 'Ongoing staff training on data protection and privacy best practices'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'pseudonymisation' in policy.security_measures %}
+                <li>{{ 'Pseudonymisation and anonymisation of data where appropriate'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+        </ul>
+        <p>
+            {{ 'While we take all reasonable precautions, no method of transmission over the internet or method of electronic storage is 100% secure. If you believe your data has been compromised, please contact us immediately at'|t('convergine-cookiebuddy') }}
+            <a href="mailto:{{ policy.contact_email }}">{{ policy.contact_email }}</a>.
+        </p>
+
+        {% if policy.notifies_breach_users %}
+            <h3>{{ 'Data Breach Notification'|t('convergine-cookiebuddy') }}</h3>
+            <p>
+                {{ 'In the event of a personal data breach, we will notify the relevant supervisory authority within 72 hours of becoming aware of the breach, as required under GDPR Article 33. Where a breach is likely to result in a high risk to your rights and freedoms, we will also notify you directly'|t('convergine-cookiebuddy') }}
+                {% if policy.breach_notification_timeframe == '72h' %}
+                    {{ 'within 72 hours'|t('convergine-cookiebuddy') }}
+                {% elseif policy.breach_notification_timeframe == '1week' %}
+                    {{ 'within one week'|t('convergine-cookiebuddy') }}
+                {% elseif policy.breach_notification_timeframe == 'asap' %}
+                    {{ 'as soon as reasonably practicable'|t('convergine-cookiebuddy') }}
+                {% else %}
+                    {{ 'without undue delay'|t('convergine-cookiebuddy') }}
+                {% endif %}
+                {{ 'of becoming aware of the incident.'|t('convergine-cookiebuddy') }}
+            </p>
+        {% endif %}
+    </section>
+
+    {# ── 9. International Transfers ───────────────────────────────────────────── #}
+    {# Auto-detect: these services are known to process data in the US or outside the EEA #}
+    {% set usBasedServices = [
+        'ga4', 'google_analytics', 'google_tag', 'google_ads', 'facebook_pixel',
+        'linkedin_pixel', 'twitter_pixel', 'tiktok_pixel', 'bing_ads',
+        'aws', 'gcp', 'azure', 'cloudflare', 'vercel',
+        'mailchimp', 'hubspot', 'salesforce', 'klaviyo', 'convertkit', 'activecampaign', 'mailerlite',
+        'stripe', 'paypal', 'braintree',
+        'mixpanel', 'hotjar', 'segment', 'heap', 'clarity',
+        'intercom', 'zendesk', 'drift',
+        'google_login', 'facebook_login', 'twitter_login', 'github_login',
+    ] %}
+    {% set hasUsServices = false %}
+    {% for svc in policy.thirdPartyServices %}
+        {% if svc in usBasedServices %}{% set hasUsServices = true %}{% endif %}
+    {% endfor %}
+    {% if isGdpr and (policy.data_transfers_outside_eea or hasUsServices) %}
+        <section id="international-transfers">
+            <h2>{{ '9. International Data Transfers'|t('convergine-cookiebuddy') }}</h2>
+            {% if policy.data_transfers_outside_eea %}
+                <p>
+                    {{ 'Some of our third-party service providers are located outside the European Economic Area (EEA) and UK. When we transfer your personal data to countries that do not have an equivalent level of data protection, we put appropriate safeguards in place, including:'|t('convergine-cookiebuddy') }}
+                </p>
+                <ul>
+                    {% if 'scc' in policy.transfer_safeguards %}
+                        <li>{{ 'Standard Contractual Clauses (SCCs) approved by the European Commission'|t('convergine-cookiebuddy') }}</li>
+                    {% endif %}
+                    {% if 'adequacy' in policy.transfer_safeguards %}
+                        <li>{{ 'Transfers to countries with an adequacy decision from the European Commission'|t('convergine-cookiebuddy') }}</li>
+                    {% endif %}
+                    {% if 'bcr' in policy.transfer_safeguards %}
+                        <li>{{ 'Binding Corporate Rules (BCRs) where applicable'|t('convergine-cookiebuddy') }}</li>
+                    {% endif %}
+                    {% if 'consent_transfer' in policy.transfer_safeguards %}
+                        <li>{{ 'Your explicit consent for the specific transfer'|t('convergine-cookiebuddy') }}</li>
+                    {% endif %}
+                </ul>
+            {% else %}
+                {# Auto-detected: US-based services used but explicit toggle not set #}
+                <p>
+                    {{ 'Some of our service providers, including cloud services and analytics platforms, are based outside the European Economic Area (EEA). We ensure all such international transfers are covered by appropriate safeguards in accordance with GDPR Article 46, such as Standard Contractual Clauses (SCCs) approved by the European Commission or adequacy decisions.'|t('convergine-cookiebuddy') }}
+                </p>
+            {% endif %}
+            <p>
+                {{ 'You may request a copy of the safeguards we have in place for international transfers by contacting us at'|t('convergine-cookiebuddy') }}
+                <a href="mailto:{{ policy.contact_email }}">{{ policy.contact_email }}</a>.
+            </p>
+        </section>
+    {% endif %}
+
+    {# ── 10. Your Rights ──────────────────────────────────────────────────────── #}
+    <section id="your-rights">
+        <h2>{{ isGdpr ? (policy.data_transfers_outside_eea ? '10. Your Privacy Rights'|t('convergine-cookiebuddy') : '9. Your Privacy Rights'|t('convergine-cookiebuddy')) : '8. Your Privacy Rights'|t('convergine-cookiebuddy') }}</h2>
+        <p>{{ 'Depending on where you are located, you may have the following rights regarding your personal data:'|t('convergine-cookiebuddy') }}</p>
+        <ul>
+            {% if 'access' in policy.rights_granted %}
+                <li><strong>{{ 'Right of access'|t('convergine-cookiebuddy') }}</strong> — {{ 'you can request a copy of the personal data we hold about you.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'rectification' in policy.rights_granted %}
+                <li><strong>{{ 'Right to rectification'|t('convergine-cookiebuddy') }}</strong> — {{ 'you can ask us to correct inaccurate or incomplete data.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'erasure' in policy.rights_granted %}
+                <li><strong>{{ 'Right to erasure'|t('convergine-cookiebuddy') }}</strong> — {{ 'you can request that we delete your personal data (the "right to be forgotten"), subject to certain exceptions.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'portability' in policy.rights_granted %}
+                <li><strong>{{ 'Right to data portability'|t('convergine-cookiebuddy') }}</strong> — {{ 'you can request your data in a structured, machine-readable format.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'restriction' in policy.rights_granted %}
+                <li><strong>{{ 'Right to restrict processing'|t('convergine-cookiebuddy') }}</strong> — {{ 'you can ask us to limit how we use your data in certain circumstances.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'objection' in policy.rights_granted %}
+                <li><strong>{{ 'Right to object'|t('convergine-cookiebuddy') }}</strong> — {{ 'you can object to our processing of your data based on legitimate interests or for direct marketing.'|t('convergine-cookiebuddy') }}</li>
+            {% endif %}
+            {% if 'no_auto' in policy.rights_granted %}
+                <li><strong>{{ 'Rights related to automated decision-making'|t('convergine-cookiebuddy') }}</strong> — {{ 'you have the right not to be subject to solely automated decisions that significantly affect you.'|t('convergine-cookiebuddy') }}
+                </li>
+            {% endif %}
+            {% if 'withdraw_consent' in policy.rights_granted %}
+                <li><strong>{{ 'Right to withdraw consent'|t('convergine-cookiebuddy') }}</strong> — {{ 'where we rely on consent as our legal basis, you may withdraw it at any time without affecting the lawfulness of prior processing.'|t('convergine-cookiebuddy') }}
+                </li>
+            {% endif %}
+        </ul>
+
+        <h3>{{ 'How to exercise your rights'|t('convergine-cookiebuddy') }}</h3>
+        {% if policy.rights_contact_method == 'email' %}
+            <p>
+                {{ 'To exercise any of your rights, please contact us by email at'|t('convergine-cookiebuddy') }}
+                <a href="mailto:{{ policy.contact_email }}">{{ policy.contact_email }}</a>.
+                {{ 'We will respond to your request within 30 days (or as required by applicable law).'|t('convergine-cookiebuddy') }}
+            </p>
+        {% elseif policy.rights_contact_method == 'form' %}
+            <p>
+                {{ 'To exercise any of your rights, please submit a request using our'|t('convergine-cookiebuddy') }}
+                <a href="{{ policy.rights_form_url }}">{{ 'Privacy Request Form'|t('convergine-cookiebuddy') }}</a>.
+                {{ 'We will respond within 30 days.'|t('convergine-cookiebuddy') }}
+            </p>
+        {% elseif policy.rights_contact_method == 'portal' %}
+            <p>
+                {{ 'You can manage your privacy preferences and exercise your rights through our self-service Privacy Portal. Contact us at'|t('convergine-cookiebuddy') }}
+                <a href="mailto:{{ policy.contact_email }}">{{ policy.contact_email }}</a> {{ 'for access.'|t('convergine-cookiebuddy') }}
+            </p>
+        {% endif %}
+
+        {% if isGdpr and policy.supervisory_authority %}
+            <h3>{{ 'Right to lodge a complaint'|t('convergine-cookiebuddy') }}</h3>
+            <p>
+                {{ 'If you are not satisfied with how we handle your data, you have the right to lodge a complaint with'|t('convergine-cookiebuddy') }}
+                {{ saLabels[policy.supervisory_authority] ?? 'the relevant supervisory authority'|t('convergine-cookiebuddy') }}.
+            </p>
+        {% endif %}
+    </section>
+
+    {# ── 11. California Rights (CCPA) ─────────────────────────────────────────── #}
+    {% if isCcpa %}
+        <section id="california-rights">
+            <h2>{{ 'California Privacy Rights (CCPA / CPRA)'|t('convergine-cookiebuddy') }}</h2>
+            <p>
+                {{ 'If you are a California resident, the California Consumer Privacy Act (CCPA) and California Privacy Rights Act (CPRA) grant you additional rights regarding your personal information:'|t('convergine-cookiebuddy') }}
+            </p>
+            <ul>
+                <li><strong>{{ 'Right to know'|t('convergine-cookiebuddy') }}</strong> — {{ 'the categories and specific pieces of personal information we collect, use, disclose, and sell.'|t('convergine-cookiebuddy') }}</li>
+                <li><strong>{{ 'Right to delete'|t('convergine-cookiebuddy') }}</strong> — {{ 'the right to request deletion of personal information we have collected, subject to exceptions.'|t('convergine-cookiebuddy') }}</li>
+                <li><strong>{{ 'Right to correct'|t('convergine-cookiebuddy') }}</strong> — {{ 'the right to correct inaccurate personal information.'|t('convergine-cookiebuddy') }}</li>
+                {% if 'opt_out_sale' in policy.rights_granted %}
+                    <li><strong>{{ 'Right to opt out of sale or sharing'|t('convergine-cookiebuddy') }}</strong> — {{ 'the right to direct us not to sell or share your personal information with third parties.'|t('convergine-cookiebuddy') }}</li>
+                {% endif %}
+                <li><strong>{{ 'Right to limit sensitive data use'|t('convergine-cookiebuddy') }}</strong> — {{ 'the right to limit our use and disclosure of sensitive personal information.'|t('convergine-cookiebuddy') }}</li>
+                <li><strong>{{ 'Right to non-discrimination'|t('convergine-cookiebuddy') }}</strong> — {{ 'we will not discriminate against you for exercising any of these rights.'|t('convergine-cookiebuddy') }}</li>
+            </ul>
+            {% if policy.ccpa_optout_url %}
+                <p>
+                    {{ 'To opt out of the sale or sharing of your personal information, please visit our dedicated'|t('convergine-cookiebuddy') }}
+                    <a href="{{ policy.ccpa_optout_url }}">{{ 'Do Not Sell or Share My Personal Information'|t('convergine-cookiebuddy') }}</a> {{ 'page.'|t('convergine-cookiebuddy') }}
+                </p>
+            {% endif %}
+            <p>
+                {{ 'To submit a CCPA request, please contact us at'|t('convergine-cookiebuddy') }}
+                <a href="mailto:{{ policy.contact_email }}">{{ policy.contact_email }}</a>
+                {{ 'or use our'|t('convergine-cookiebuddy') }} <a href="{{ policy.rights_form_url ?? '#' }}">{{ 'Privacy Request Form'|t('convergine-cookiebuddy') }}</a>.
+                {{ 'We will verify your identity before processing requests.'|t('convergine-cookiebuddy') }}
+            </p>
+            <p>
+                {{ 'You may also designate an authorised agent to make requests on your behalf by providing written authorisation and proof of identity.'|t('convergine-cookiebuddy') }}
+            </p>
+        </section>
+    {% endif %}
+
+    {# ── 12. Canadian Rights (PIPEDA) ─────────────────────────────────────────── #}
+    {% if isPipeda %}
+        <section id="canadian-rights">
+            <h2>{{ 'Canadian Privacy Rights (PIPEDA)'|t('convergine-cookiebuddy') }}</h2>
+            <p>
+                {{ 'If you are a resident of Canada, the Personal Information Protection and Electronic Documents Act (PIPEDA) grants you certain rights over your personal information, including the right to access, correct, and withdraw consent for the processing of your personal data. To exercise these rights, please contact us at'|t('convergine-cookiebuddy') }}
+                <a href="mailto:{{ policy.contact_email }}">{{ policy.contact_email }}</a>.
+            </p>
+        </section>
+    {% endif %}
+
+    {# ── 13. Australian Privacy Rights ───────────────────────────────────────── #}
+    {% if isAus %}
+        <section id="australian-rights">
+            <h2>{{ 'Australian Privacy Rights'|t('convergine-cookiebuddy') }}</h2>
+            <p>
+                {{ 'If you are located in Australia, your personal information is handled in accordance with the Privacy Act 1988 (Cth) and the Australian Privacy Principles (APPs). You have the right to access and correct your personal information. To exercise these rights or to lodge a complaint, please contact us at'|t('convergine-cookiebuddy') }}
+                <a href="mailto:{{ policy.contact_email }}">{{ policy.contact_email }}</a>.
+            </p>
+            <p>
+                {{ 'If we cannot resolve your complaint, you may contact the Office of the Australian Information Commissioner (OAIC) at'|t('convergine-cookiebuddy') }}
+                <a href="https://www.oaic.gov.au" target="_blank" rel="noopener">oaic.gov.au</a>.
+            </p>
+        </section>
+    {% endif %}
+
+    {# ── 14. Links to Other Sites ─────────────────────────────────────────────── #}
+    <section id="external-links">
+        <h2>{{ 'External Links'|t('convergine-cookiebuddy') }}</h2>
+        <p>
+            {{ 'Our website may contain links to third-party websites. We are not responsible for the privacy practices or content of those sites. We encourage you to review the privacy policies of any external websites you visit.'|t('convergine-cookiebuddy') }}
+        </p>
+    </section>
+
+    {# ── 15. Changes to This Policy ───────────────────────────────────────────── #}
+    <section id="policy-changes">
+        <h2>{{ 'Changes to This Policy'|t('convergine-cookiebuddy') }}</h2>
+        <p>
+            {{ 'We may update this Privacy Policy from time to time to reflect changes in our practices, legal requirements, or services. When we make significant changes, we will notify you'|t('convergine-cookiebuddy') }}
+            {% if policy.notify_changes %}
+                {{ 'by'|t('convergine-cookiebuddy') }}
+                {% set notifyMethods = [] %}
+                {% if 'email' in policy.notify_changes %}{% set notifyMethods = notifyMethods|merge(['email'|t('convergine-cookiebuddy')]) %}{% endif %}
+                {% if 'banner' in policy.notify_changes %}{% set notifyMethods = notifyMethods|merge(['a notice on our website'|t('convergine-cookiebuddy')]) %}{% endif %}
+                {{ notifyMethods|join(' and/or ') }}
+                {{ 'and by'|t('convergine-cookiebuddy') }}
+            {% endif %}
+            {{ 'updating the effective date at the top of this page.'|t('convergine-cookiebuddy') }}
+        </p>
+        <p>
+            {{ 'We encourage you to review this policy periodically. Your continued use of our website after any changes constitutes your acceptance of the updated policy.'|t('convergine-cookiebuddy') }}
+        </p>
+    </section>
+
+    {# ── 16. Contact Us ───────────────────────────────────────────────────────── #}
+    <section id="contact">
+        <h2>{{ 'Contact Us'|t('convergine-cookiebuddy') }}</h2>
+        <p>
+            {{ 'If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:'|t('convergine-cookiebuddy') }}
+        </p>
+        <ul>
+            <li><strong>{{ 'Email:'|t('convergine-cookiebuddy') }}</strong> <a href="mailto:{{ policy.contact_email }}">{{ policy.contact_email }}</a></li>
+            {% if policy.business_address %}
+                <li><strong>{{ 'Address:'|t('convergine-cookiebuddy') }}</strong> {{ policy.business_address|nl2br }}</li>
+            {% endif %}
+            {% if policy.has_dpo %}
+                <li><strong>{{ 'Data Protection Officer:'|t('convergine-cookiebuddy') }}</strong> <a href="mailto:{{ policy.dpo_email }}">{{ policy.dpo_email }}</a></li>
+            {% endif %}
+        </ul>
+    </section>
+
+</article>

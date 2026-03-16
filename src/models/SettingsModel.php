@@ -46,10 +46,6 @@ class SettingsModel extends Model {
 		 return $this->$field;
 	 }
 
-	 public function setCustomMessages() {
-		 \Craft::dump('s');
-	 }
-
 	public function setAttributes($values, $safeOnly = true): void
 	{
 		$request = \Craft::$app->getRequest();

@@ -1,0 +1,225 @@
+{% extends 'convergine-cookiebuddy/_layouts/_settings' %}
+{% import '_includes/forms' as forms %}
+{% set title = 'Cookie Buddy' %}
+{% set selectedSubnavItem = 'settings' %}
+
+{% do view.registerAssetBundle('convergine\\cookiebuddy\\assets\\CookieBuddyCpAssets') %}
+
+{% set fullPageForm = false %}
+{% block content %}
+
+
+
+        <div class="flex flex-nowrap" style="align-items: center; justify-content: space-between; margin-bottom: 24px;">
+            <h1>{{ "Generate Privacy Policy"|t('convergine-cookiebuddy') }}</h1>
+            <a href="{{ url('convergine-cookiebuddy/legal/privacy-policy') }}" class="btn">
+                {{ "Cancel"|t('convergine-cookiebuddy') }}
+            </a>
+        </div>
+
+        <p class="light">{{ "Answer the questions below to generate a customised privacy policy for your website. Required fields are marked with an asterisk."|t('convergine-cookiebuddy') }}</p>
+
+        {% if model is defined and model.hasErrors() %}
+            <div class="error" style="margin-bottom:1.5rem; padding:.75rem 1rem; background:#fde8e8; border:1px solid #f5c6c6; border-radius:4px; color:#c0392b;">
+                {{ "Please fix the errors highlighted below."|t('convergine-cookiebuddy') }}
+            </div>
+        {% endif %}
+
+        {# Shorthand for submitted values #}
+        {% set sub = submitted ?? {} %}
+
+        <form method="post" action="" id="privacy-policy-wizard">
+            {{ csrfInput() }}
+            {{ actionInput('convergine-cookiebuddy/legal-policies/generate') }}
+
+            {% for step in steps %}
+            <fieldset class="pp-step" id="step-{{ step.id }}" style="border:1px solid #e3e5e8; border-radius:5px; padding:1.5rem 2rem; margin-bottom:2rem;">
+                <legend style="font-weight:bold; font-size:1.1em; padding:0 .5rem; color:#3f4d5a;">
+                    {{ step.title|t('convergine-cookiebuddy') }}
+                </legend>
+                {% if step.description %}
+                <p class="light" style="margin-top:0; margin-bottom:1.25rem;">{{ step.description|t('convergine-cookiebuddy') }}</p>
+                {% endif %}
+
+                {% for q in step.questions %}
+                    {# Build data attributes for depends_on #}
+                    {% set dependsAttrs = '' %}
+                    {% if q.depends_on is defined %}
+                        {% set dependsKey = q.depends_on|keys|first %}
+                        {% set dependsVal = q.depends_on[dependsKey] %}
+                        {% set dependsValStr = (dependsVal is same as(true)) ? 'true' : dependsVal %}
+                        {% set dependsAttrs = 'data-depends-on="' ~ dependsKey ~ '" data-depends-value="' ~ dependsValStr ~ '"' %}
+                    {% endif %}
+
+                    <div class="pp-field-wrap" id="wrap-{{ q.id }}" {{ dependsAttrs|raw }}>
+
+                    {% set fieldErrors = model is defined ? model.getErrors(q.id) : [] %}
+
+                    {% if q.type == 'toggle' %}
+                        {{ forms.lightswitchField({
+                            label: q.label|t('convergine-cookiebuddy'),
+                            id: q.id,
+                            name: q.id,
+                            on: sub is not empty ? (sub[q.id] ?? '') != '' : (q.default ?? false),
+                            instructions: q.help is defined ? q.help|t('convergine-cookiebuddy') : null,
+                            errors: fieldErrors
+                        }) }}
+
+                    {% elseif q.type == 'select' %}
+                        {% set selectOptions = [] %}
+                        {% for opt in (q.options ?? []) %}
+                            {% set selectOptions = selectOptions|merge([{label: opt.label|t('convergine-cookiebuddy'), value: opt.value}]) %}
+                        {% endfor %}
+                        {{ forms.selectField({
+                            label: q.label|t('convergine-cookiebuddy'),
+                            id: q.id,
+                            name: q.id,
+                            required: q.required ?? false,
+                            options: selectOptions,
+                            value: sub[q.id] ?? (q.id == 'policy_language' ? (preferredLang ?? (q.default ?? '')) : (q.default ?? '')),
+                            instructions: q.help is defined ? q.help|t('convergine-cookiebuddy') : null,
+                            errors: fieldErrors
+                        }) }}
+
+                    {% elseif q.type == 'multiselect' %}
+                        {% set checkedValues = sub[q.id] ?? [] %}
+                        <div class="field {{ fieldErrors|length ? 'has-errors' : '' }}">
+                            <div class="heading">
+                                <label>
+                                    {{ q.label|t('convergine-cookiebuddy') }}
+                                    {% if q.required ?? false %}<span class="required" aria-hidden="true"></span>{% endif %}
+                                </label>
+                                {% if q.help is defined %}<div class="instructions"><p>{{ q.help|t('convergine-cookiebuddy') }}</p></div>{% endif %}
+                            </div>
+                            <div class="input {% if fieldErrors|length %}error{% endif %}" style="column-count:2; column-gap:1rem;">
+                                {% for opt in (q.options ?? []) %}
+                                <div style="break-inside:avoid; margin-bottom:.4rem;">
+                                    <label style="display:flex; align-items:baseline; gap:.4rem; cursor:pointer;">
+                                        <input type="checkbox"
+                                               id="{{ q.id }}-{{ opt.value }}"
+                                               name="{{ q.id }}[]"
+                                               value="{{ opt.value }}"
+                                               {{ opt.value in checkedValues ? 'checked' : '' }}>
+                                        {{ opt.label|t('convergine-cookiebuddy') }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% if fieldErrors|length %}
+                                <ul class="errors">
+                                    {% for err in fieldErrors %}<li>{{ err }}</li>{% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+
+                    {% elseif q.type == 'textarea' %}
+                        {{ forms.textareaField({
+                            label: q.label|t('convergine-cookiebuddy'),
+                            id: q.id,
+                            name: q.id,
+                            required: q.required ?? false,
+                            placeholder: q.placeholder ?? '',
+                            rows: q.rows ?? 4,
+                            value: sub[q.id] ?? '',
+                            instructions: q.help is defined ? q.help|t('convergine-cookiebuddy') : null,
+                            errors: fieldErrors
+                        }) }}
+
+                    {% elseif q.type == 'date' %}
+                        {% set dateVal = model is defined and model.effective_date
+                            ? model.effective_date
+                            : (q.default == 'today' ? now|date('Y-m-d') : (q.default ?? '')) %}
+                        {{ forms.dateField({
+                            label: q.label|t('convergine-cookiebuddy'),
+                            id: q.id,
+                            name: q.id,
+                            required: q.required ?? false,
+                            type: 'date',
+                            value: dateVal,
+                            instructions: q.help is defined ? q.help|t('convergine-cookiebuddy') : null,
+                            errors: fieldErrors
+                        }) }}
+
+                    {% elseif q.type == 'country_select' %}
+                        {{ forms.textField({
+                            label: q.label|t('convergine-cookiebuddy'),
+                            id: q.id,
+                            name: q.id,
+                            required: q.required ?? false,
+                            placeholder: 'e.g. United Kingdom, Germany, United States',
+                            value: sub[q.id] ?? '',
+                            instructions: q.help is defined ? q.help|t('convergine-cookiebuddy') : null,
+                            errors: fieldErrors
+                        }) }}
+
+                    {% elseif q.type == 'legal_basis_map' %}
+                        {# Dynamic purpose → legal basis table, populated by JS #}
+                        {% set savedMap = sub[q.id] ?? {} %}
+                        {% set basesOptionsJson = q.bases|map(b => {value: b.value, label: b.label|t('convergine-cookiebuddy')})|json_encode %}
+                        {% set savedMapJson = savedMap|json_encode %}
+                        <div class="field">
+                            <div class="heading">
+                                <label>
+                                    {{ q.label|t('convergine-cookiebuddy') }}
+                                </label>
+                                {% if q.help is defined %}<div class="instructions"><p>{{ q.help|t('convergine-cookiebuddy') }}</p></div>{% endif %}
+                            </div>
+                            <div class="input pp-legal-basis-map" id="pp-legal-basis-map-wrap">
+                                <table class="data" style="width:100%; border-collapse:collapse;">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align:left; padding:.4rem .5rem; width:50%;">{{ 'Processing Purpose'|t('convergine-cookiebuddy') }}</th>
+                                            <th style="text-align:left; padding:.4rem .5rem;">{{ 'Legal Basis (GDPR Article 6)'|t('convergine-cookiebuddy') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pp-legal-basis-rows"></tbody>
+                                </table>
+                                <p class="light" id="pp-legal-basis-empty" style="display:none; margin:.5rem 0 0;">
+                                    {{ 'Please select processing purposes above to assign legal bases.'|t('convergine-cookiebuddy') }}
+                                </p>
+                            </div>
+                        </div>
+                        <script>
+                        window.cbLegalBasisConfig = {
+                            basesOptions: {{ basesOptionsJson|raw }},
+                            savedMap:     {{ savedMapJson|raw }},
+                            emptyLabel:   {{ '— select —'|t('convergine-cookiebuddy')|json_encode|raw }}
+                        };
+                        </script>
+
+                    {% else %}
+                        {# text, email, url #}
+                        {{ forms.textField({
+                            label: q.label|t('convergine-cookiebuddy'),
+                            id: q.id,
+                            name: q.id,
+                            required: q.required ?? false,
+                            type: q.type in ['email', 'url'] ? q.type : 'text',
+                            placeholder: q.placeholder ?? '',
+                            value: sub[q.id] ?? (q.default ?? ''),
+                            instructions: q.help is defined ? q.help|t('convergine-cookiebuddy') : null,
+                            errors: fieldErrors
+                        }) }}
+                    {% endif %}
+
+                    </div>{# /.pp-field-wrap #}
+                {% endfor %}
+            </fieldset>
+            {% endfor %}
+
+            <div style="margin-top:1rem; margin-bottom:3rem;">
+                <button type="submit" class="btn submit">
+                    {{ "Generate Privacy Policy"|t('convergine-cookiebuddy') }}
+                </button>
+            </div>
+        </form>
+
+
+
+<script>
+window.cbWizardConfig = {
+    transferNoticeText: {{ 'Note: One or more of your selected third-party services (e.g. Google, Meta, AWS) process data outside the EEA. Please enable this toggle and specify the safeguards you rely on.'|t('convergine-cookiebuddy')|json_encode|raw }}
+};
+</script>
+
+{% endblock %}

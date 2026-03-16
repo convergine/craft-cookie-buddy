@@ -1,0 +1,88 @@
+{% set activeTab = 'privacy-policy' %}
+{% extends 'convergine-cookiebuddy/_layouts/_settings' %}
+{% set title = 'Cookie Buddy' %}
+{% set selectedSubnavItem = 'settings' %}
+
+{% do view.registerAssetBundle('convergine\\cookiebuddy\\assets\\CookieBuddyCpAssets') %}
+
+{% block content %}
+
+
+        <div class="flex flex-nowrap" style="align-items: center; justify-content: space-between; margin-bottom: 24px;">
+            <h1>
+                {{ "Privacy Policy"|t('convergine-cookiebuddy') }}
+                <span class="light"> — {{ document.company_name }}</span>
+            </h1>
+            <div class="flex" style="gap: 8px;">
+                <a href="{{ url('convergine-cookiebuddy/legal/privacy-policy') }}" class="btn">
+                    {{ "Back to Policies"|t('convergine-cookiebuddy') }}
+                </a>
+                <button type="button" class="btn" id="copy-policy-html-btn" onclick="cbCopyPolicyHtml()">
+                    {{ "Copy Policy HTML"|t('convergine-cookiebuddy') }}
+                </button>
+                <button type="button" class="btn" id="copy-policy-text-btn" onclick="cbCopyPolicyText()">
+                    {{ "Copy Policy Text"|t('convergine-cookiebuddy') }}
+                </button>
+                <a href="{{ url('convergine-cookiebuddy/legal/privacy-policy/new') }}" class="btn submit">
+                    {{ "Generate New Policy"|t('convergine-cookiebuddy') }}
+                </a>
+            </div>
+        </div>
+
+        <div class="meta">
+            <div class="data">
+                <span class="label">{{ "Version"|t('convergine-cookiebuddy') }}</span>
+                <span class="value">{{ document.version }}</span>
+            </div>
+            <div class="data">
+                <span class="label">{{ "Status"|t('convergine-cookiebuddy') }}</span>
+                <span class="value">
+                    <span class="status {% if document.status == 'published' %}green{% endif %}"></span>
+                    {{ document.status|capitalize }}
+                </span>
+            </div>
+            {% if document.effective_date %}
+            <div class="data">
+                <span class="label">{{ "Effective Date"|t('convergine-cookiebuddy') }}</span>
+                <span class="value">{{ document.effective_date|date('j F Y') }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <h2>{{ "Policy Preview"|t('convergine-cookiebuddy') }}</h2>
+
+        <div class="legal-policy-preview">
+            {{ document.rendered_html|raw }}
+        </div>
+
+        <h2>{{ "Embed Code"|t('convergine-cookiebuddy') }}</h2>
+        <p class="light">{{ "Copy this snippet into any Craft CMS template to display the policy on your site."|t('convergine-cookiebuddy') }}</p>
+
+        {% set embedSnippet = '{{ craft.cookieBuddy.renderedHtml(' ~ document.id ~ ')|raw }}' %}
+        <div style="position:relative;">
+            <pre id="embed-code" style="background:#f3f4f6;border:1px solid #d0d5db;border-radius:4px;padding:1rem;overflow-x:auto;font-size:13px;line-height:1.5;">{{ embedSnippet|e }}</pre>
+            <button type="button" class="btn small" style="position:absolute;top:.5rem;right:.5rem;" onclick="cbCopyEmbed()">
+                {{ "Copy"|t('convergine-cookiebuddy') }}
+            </button>
+        </div>
+
+        <div style="margin-top: 1.5rem;">
+            <form method="post" style="display:inline" onsubmit="return confirm('{{ "Delete this policy?"|t('convergine-cookiebuddy') }}')">
+                {{ csrfInput() }}
+                {{ actionInput('convergine-cookiebuddy/legal-policies/delete') }}
+                <input type="hidden" name="id" value="{{ document.id }}">
+                <button type="submit" class="btn">{{ "Delete Policy"|t('convergine-cookiebuddy') }}</button>
+            </form>
+        </div>
+
+
+
+<script>
+window.cbViewConfig = {
+    labelCopyHtml: {{ "Copy Policy HTML"|t('convergine-cookiebuddy')|json_encode|raw }},
+    labelCopyText: {{ "Copy Policy Text"|t('convergine-cookiebuddy')|json_encode|raw }},
+    labelCopied:   {{ "Copied!"|t('convergine-cookiebuddy')|json_encode|raw }}
+};
+</script>
+
+{% endblock %}

@@ -1,5 +1,9 @@
 # Cookie Buddy - Changelog
 
+## 1.0.7 - 2026-03-16
+### Added
+- Added policy generator with new compliance and e-commerce templates.
+
 ## 1.0.6 - 2025-09-17
 ### Added
 - Allow resetting cookies. [Issue #2](https://github.com/convergine/craft-cookie-buddy/issues/2)
