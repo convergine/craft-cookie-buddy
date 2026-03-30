@@ -1,5 +1,9 @@
 # Cookie Buddy - Changelog
 
+## 1.0.8 - 2026-03-30
+### Fixed
+- Fixed missing `legal_policy_documents` database table. [Issue #6](https://github.com/convergine/craft-cookie-buddy/issues/6)
+
 ## 1.0.7 - 2026-03-16
 ### Added
 - Added policy generator with new compliance and e-commerce templates.
