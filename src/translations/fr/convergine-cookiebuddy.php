@@ -28,6 +28,8 @@
 	'Send Consent Signals to Google Analytics' => 'Envoyer les signaux de consentement à Google Analytics',
 	'If enabled, plugin will send consent signals to Google based on visitors selection, which includes analytics_storage, ad_storage, ad_user_data, ad_personalization signals.' => 'Si activé, le plugin enverra des signaux de consentement à Google en fonction du choix des visiteurs, incluant analytics_storage, ad_storage, ad_user_data et ad_personalization.',
 
+	"Show a 'Reject All' button on the initial banner" => "Afficher un bouton « Tout refuser » sur la bannière initiale",
+	"Required for UK/EU compliance: 'Reject All' is shown with equal prominence to 'Accept All' on the first banner." => "Requis pour la conformité RGPD (UK/UE) : « Tout refuser » s'affiche avec la même importance que « Tout accepter » sur la première bannière.",
 	'Accept all' => 'Tout accepter',
 	'Manage preferences' => 'Gérer les préférences',
 	'Consent Preferences Center' => 'Centre de préférences de consentement',

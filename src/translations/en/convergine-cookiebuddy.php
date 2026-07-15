@@ -27,7 +27,8 @@
 	'Enable the cookie consent popup'=>'Enable the cookie consent popup',
 	'Send Consent Signals to Google Analytics'=>'Send Consent Signals to Google Analytics',
 	'If enabled, plugin will send consent signals to Google based on visitors selection, which includes analytics_storage, ad_storage, ad_user_data, ad_personalization signals.'=>'If enabled, plugin will send consent signals to Google based on visitors selection, which includes analytics_storage, ad_storage, ad_user_data, ad_personalization signals.',
-
+	"Show a 'Reject All' button on the initial banner"=>"Show a 'Reject All' button on the initial banner",
+	"Required for UK/EU compliance: 'Reject All' is shown with equal prominence to 'Accept All' on the first banner."=>"Required for UK/EU compliance: 'Reject All' is shown with equal prominence to 'Accept All' on the first banner.",
 
 	//frontend popup strings
 	'Accept all'=>'Accept all',

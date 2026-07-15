@@ -1,5 +1,9 @@
 # Cookie Buddy - Changelog
 
+## 1.0.9 - 2026-07-15
+### Added
+- Added an optional "Reject All" button on the initial consent banner, shown with equal prominence to "Accept All" for UK/EU compliance. Off by default, enabled per-site under Customization → Popup.
+
 ## 1.0.8 - 2026-03-30
 ### Fixed
 - Fixed missing `legal_policy_documents` database table. [Issue #6](https://github.com/convergine/craft-cookie-buddy/issues/6)

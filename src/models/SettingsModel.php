@@ -17,6 +17,7 @@ class SettingsModel extends Model {
     public string $consentPosition = 'bottom right';
     public bool $consentEqualWeightButtons = true;
     public bool $consentFlipButtons = false;
+    public bool $consentShowRejectAll = false;
 
     public string $internalTitle = "Cookie Usage";
     public string $internalDescription = "A cookie is a small text file sent to your browser and stored on your device by a website you visit. Cookies may save information about the pages you visit and the devices you use, which in return can give us more insight about how you use our website so we can improve its usability and deliver more relevant content.";

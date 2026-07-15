@@ -29,6 +29,8 @@
 	'If enabled, plugin will send consent signals to Google based on visitors selection, which includes analytics_storage, ad_storage, ad_user_data, ad_personalization signals.' => 'Se abilitato, il plugin invierà segnali di consenso a Google in base alla selezione dei visitatori, inclusi analytics_storage, ad_storage, ad_user_data e ad_personalization.',
 
 	//frontend popup strings
+	"Show a 'Reject All' button on the initial banner" => "Mostra un pulsante «Rifiuta tutto» nel banner iniziale",
+	"Required for UK/EU compliance: 'Reject All' is shown with equal prominence to 'Accept All' on the first banner." => "Richiesto per la conformità UK/UE: «Rifiuta tutto» viene mostrato con la stessa evidenza di «Accetta tutto» nel primo banner.",
 	'Accept all' => 'Accetta tutto',
 	'Manage preferences' => 'Gestisci preferenze',
 	'Consent Preferences Center' => 'Centro preferenze consenso',

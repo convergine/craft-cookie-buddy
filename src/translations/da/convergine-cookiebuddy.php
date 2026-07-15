@@ -29,6 +29,8 @@
 	'If enabled, plugin will send consent signals to Google based on visitors selection, which includes analytics_storage, ad_storage, ad_user_data, ad_personalization signals.' => 'Hvis aktiveret, sender plugin’et samtykkesignaler til Google baseret på besøgendes valg, herunder analytics_storage, ad_storage, ad_user_data og ad_personalization.',
 
 	//frontend popup strings
+	"Show a 'Reject All' button on the initial banner" => "Vis en 'Afvis alle'-knap på det første banner",
+	"Required for UK/EU compliance: 'Reject All' is shown with equal prominence to 'Accept All' on the first banner." => "Påkrævet for UK/EU-overholdelse: 'Afvis alle' vises lige så tydeligt som 'Accepter alle' på det første banner.",
 	'Accept all' => 'Accepter alle',
 	'Manage preferences' => 'Administrer præferencer',
 	'Consent Preferences Center' => 'Samtykkepræferencecenter',

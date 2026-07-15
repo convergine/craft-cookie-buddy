@@ -59,6 +59,12 @@
                     value: settings.getCustomMessage('footer',currentSiteHandle),
                     translatable:true
                 }) }}
+                {{ forms.lightswitchField({
+                    label: "Show a 'Reject All' button on the initial banner"|t('convergine-cookiebuddy'),
+                    instructions: "Required for UK/EU compliance: 'Reject All' is shown with equal prominence to 'Accept All' on the first banner."|t('convergine-cookiebuddy'),
+                    name: 'consentShowRejectAll',
+                    on: settings.getCustomMessage('consentShowRejectAll', currentSiteHandle),
+                }) }}
             {% endnamespace %}
             {% namespace 'settings' %}
                 <hr>
