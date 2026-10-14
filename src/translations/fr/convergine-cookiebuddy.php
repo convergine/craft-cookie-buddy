@@ -12,6 +12,12 @@
 	'Popup Title' => 'Titre du popup',
 	'Popup Description' => 'Description du popup',
 	'Footer' => 'Pied de page',
+	'Theme' => 'Thème',
+	'Light' => 'Clair',
+	'Dark' => 'Sombre',
+	'Light Funky' => 'Clair Funky',
+	'Elegant Black' => 'Noir Élégant',
+	'Applies to both the consent banner and the preferences modal.' => 'S\'applique à la fois à la bannière de consentement et à la fenêtre de préférences.',
 	'Layout' => 'Disposition',
 	'Position' => 'Position',
 	'Equal Weight Buttons' => 'Boutons de poids égal',
@@ -25,10 +31,16 @@
 	'More Description' => 'Description supplémentaire',
 
 	'Enable the cookie consent popup' => 'Activer la fenêtre de consentement aux cookies',
+	'Enable non-essential cookie categories by default' => 'Activer par défaut les catégories de cookies non essentielles',
+	'Turn off for opt-in jurisdictions (e.g. Australia, EU): the Performance and Targeting switches start OFF in the preferences modal, so visitors have to turn them on themselves.' => 'Désactivez cette option dans les juridictions à consentement préalable (p. ex. Australie, UE) : les boutons Performance et Ciblage sont sur ARRÊT dans la fenêtre de préférences, afin que les visiteurs les activent eux-mêmes.',
 	'Send Consent Signals to Google Analytics' => 'Envoyer les signaux de consentement à Google Analytics',
 	'If enabled, plugin will send consent signals to Google based on visitors selection, which includes analytics_storage, ad_storage, ad_user_data, ad_personalization signals.' => 'Si activé, le plugin enverra des signaux de consentement à Google en fonction du choix des visiteurs, incluant analytics_storage, ad_storage, ad_user_data et ad_personalization.',
 
 	"Show a 'Reject All' button on the initial banner" => "Afficher un bouton « Tout refuser » sur la bannière initiale",
+	'Consent Revision' => 'Révision du consentement',
+	'Increase this number after significant changes to your privacy policy or the cookies you use. All visitors\' existing consents become invalid and the consent banner is shown again.' => 'Augmentez ce nombre après des modifications importantes de votre politique de confidentialité ou des cookies utilisés. Tous les consentements existants des visiteurs deviennent invalides et la bannière de consentement s\'affiche à nouveau.',
+	'Revision Message' => 'Message de révision',
+	'Added to the popup description for returning visitors whose consent was reset by a new Consent Revision (see General settings). Leave empty to show nothing.' => 'Ajouté à la description de la fenêtre pour les visiteurs récurrents dont le consentement a été réinitialisé par une nouvelle révision du consentement (voir les paramètres généraux). Laissez vide pour ne rien afficher.',
 	"Required for UK/EU compliance: 'Reject All' is shown with equal prominence to 'Accept All' on the first banner." => "Requis pour la conformité RGPD (UK/UE) : « Tout refuser » s'affiche avec la même importance que « Tout accepter » sur la première bannière.",
 	'Accept all' => 'Tout accepter',
 	'Manage preferences' => 'Gérer les préférences',
@@ -712,4 +724,13 @@
 		=> 'Nous traitons les données susmentionnées sur la base de nos intérêts légitimes, de la nécessité contractuelle, d\'obligations légales ou de votre consentement, selon ce qui s\'applique à chaque activité.',
 	'Note: One or more of your selected third-party services (e.g. Google, Meta, AWS) process data outside the EEA. Please enable this toggle and specify the safeguards you rely on.'
 		=> 'Remarque : un ou plusieurs des services tiers sélectionnés (p. ex. Google, Meta, AWS) traitent des données en dehors de l\'EEE. Veuillez activer ce commutateur et préciser les garanties sur lesquelles vous vous appuyez.',
+
+	// Privacy Policy — edit
+	'Edit'                                    => 'Modifier',
+	'Edit Policy'                             => 'Modifier la politique',
+	'Edit Privacy Policy'                     => 'Modifier la politique de confidentialité',
+	'Save Changes'                            => 'Enregistrer les modifications',
+	'Privacy policy updated.'                 => 'Politique de confidentialité mise à jour.',
+	'Update the answers below and save to regenerate this policy in place. Its embed code stays the same. Consider bumping the version and effective date for substantive changes.'
+		=> 'Mettez à jour les réponses ci-dessous et enregistrez pour régénérer cette politique sur place. Son code d\'intégration reste le même. Pour des modifications importantes, pensez à augmenter le numéro de version et à mettre à jour la date d\'entrée en vigueur.',
 ];

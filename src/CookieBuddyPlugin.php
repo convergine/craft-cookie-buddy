@@ -21,6 +21,8 @@ use yii\base\Event;
 class CookieBuddyPlugin extends Plugin {
 	public static string $plugin;
 	public ?string $name = 'Cookie Buddy';
+	// Bump with every new migration, so the control panel updater runs it.
+	public string $schemaVersion = '1.1.0';
 
 	public static function config(): array
 	{
@@ -52,6 +54,7 @@ class CookieBuddyPlugin extends Plugin {
                 $event->rules['convergine-cookiebuddy/legal/privacy-policy/new'] = 'convergine-cookiebuddy/legal-policies/wizard';
                 $event->rules['convergine-cookiebuddy/legal/generate'] = 'convergine-cookiebuddy/legal-policies/generate';
                 $event->rules['convergine-cookiebuddy/legal/view'] = 'convergine-cookiebuddy/legal-policies/view';
+                $event->rules['convergine-cookiebuddy/legal/edit'] = 'convergine-cookiebuddy/legal-policies/edit';
                 $event->rules['convergine-cookiebuddy/legal/delete'] = 'convergine-cookiebuddy/legal-policies/delete';
 			}
 		);

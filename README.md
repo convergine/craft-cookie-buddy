@@ -12,6 +12,8 @@ A CraftCMS 4 & 5 plugin for simple and effective cookie management. Supports Goo
 
 - **Fully Customizable UI** Customize the popup title, description, layout (box or banner), position (e.g. bottom-right), footer links, and button styling to match your brand.
 
+- **Pre-Made Design Themes** Pick from four ready-made looks — Light, Dark, Light Funky and Elegant Black — applied to both the consent banner and the preferences modal.
+
 - **Granular Preferences Control** Provide individual descriptions for required, performance, and targeting cookies. Help users understand what each cookie category does.
 
 - **User-Friendly Setup** Configure everything through a clean, intuitive settings panel inside the CraftCMS control panel. No coding required.
@@ -66,8 +68,6 @@ For resetting cookies, you can add a `<button>` with the ID `cookiebuddy-reset` 
 - **Translations Support**: Enable option to translate the popups contents to all languages enabled in Craft instance.
 
 - **Multi-Site Controls**: Choose which multi-site to display the consent on.
-
-- **Design Themes**: Add pre-made design themes for popups. 
 
 ## Support
 

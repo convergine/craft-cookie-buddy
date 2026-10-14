@@ -6,18 +6,23 @@
 {% do view.registerAssetBundle('convergine\\cookiebuddy\\assets\\CookieBuddyCpAssets') %}
 
 {% set fullPageForm = false %}
+{% set isEdit = documentId is defined and documentId %}
 {% block content %}
 
 
 
         <div class="flex flex-nowrap" style="align-items: center; justify-content: space-between; margin-bottom: 24px;">
-            <h1>{{ "Generate Privacy Policy"|t('convergine-cookiebuddy') }}</h1>
-            <a href="{{ url('convergine-cookiebuddy/legal/privacy-policy') }}" class="btn">
+            <h1>{{ (isEdit ? "Edit Privacy Policy" : "Generate Privacy Policy")|t('convergine-cookiebuddy') }}</h1>
+            <a href="{{ isEdit ? url('convergine-cookiebuddy/legal/view', {id: documentId}) : url('convergine-cookiebuddy/legal/privacy-policy') }}" class="btn">
                 {{ "Cancel"|t('convergine-cookiebuddy') }}
             </a>
         </div>
 
+        {% if isEdit %}
+        <p class="light">{{ "Update the answers below and save to regenerate this policy in place. Its embed code stays the same. Consider bumping the version and effective date for substantive changes."|t('convergine-cookiebuddy') }}</p>
+        {% else %}
         <p class="light">{{ "Answer the questions below to generate a customised privacy policy for your website. Required fields are marked with an asterisk."|t('convergine-cookiebuddy') }}</p>
+        {% endif %}
 
         {% if model is defined and model.hasErrors() %}
             <div class="error" style="margin-bottom:1.5rem; padding:.75rem 1rem; background:#fde8e8; border:1px solid #f5c6c6; border-radius:4px; color:#c0392b;">
@@ -30,7 +35,12 @@
 
         <form method="post" action="" id="privacy-policy-wizard">
             {{ csrfInput() }}
-            {{ actionInput('convergine-cookiebuddy/legal-policies/generate') }}
+            {% if isEdit %}
+                {{ actionInput('convergine-cookiebuddy/legal-policies/update') }}
+                <input type="hidden" name="id" value="{{ documentId }}">
+            {% else %}
+                {{ actionInput('convergine-cookiebuddy/legal-policies/generate') }}
+            {% endif %}
 
             {% for step in steps %}
             <fieldset class="pp-step" id="step-{{ step.id }}" style="border:1px solid #e3e5e8; border-radius:5px; padding:1.5rem 2rem; margin-bottom:2rem;">
@@ -126,9 +136,15 @@
                         }) }}
 
                     {% elseif q.type == 'date' %}
-                        {% set dateVal = model is defined and model.effective_date
-                            ? model.effective_date
-                            : (q.default == 'today' ? now|date('Y-m-d') : (q.default ?? '')) %}
+                        {# The model holds the raw input when it failed validation; dateField would
+                           throw parsing it, so leave the field empty next to the error instead. #}
+                        {% if model is defined and model.effective_date and model.effective_date matches '/^\\d{4}-\\d{2}-\\d{2}$/' %}
+                            {% set dateVal = model.effective_date %}
+                        {% elseif model is defined and model.hasErrors('effective_date') %}
+                            {% set dateVal = null %}
+                        {% else %}
+                            {% set dateVal = q.default == 'today' ? now|date('Y-m-d') : (q.default ?? '') %}
+                        {% endif %}
                         {{ forms.dateField({
                             label: q.label|t('convergine-cookiebuddy'),
                             id: q.id,
@@ -209,7 +225,7 @@
 
             <div style="margin-top:1rem; margin-bottom:3rem;">
                 <button type="submit" class="btn submit">
-                    {{ "Generate Privacy Policy"|t('convergine-cookiebuddy') }}
+                    {{ (isEdit ? "Save Changes" : "Generate Privacy Policy")|t('convergine-cookiebuddy') }}
                 </button>
             </div>
         </form>

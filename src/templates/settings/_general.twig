@@ -7,8 +7,7 @@
 {% set fullPageForm = true %}
 
 {% block content %}
-    {{ actionInput('plugins/save-plugin-settings') }}
-    {{ hiddenInput('pluginHandle', 'convergine-cookiebuddy') }}
+    {{ actionInput('convergine-cookiebuddy/settings/save') }}
 
     <div id="fields">
         {% namespace 'settings' %}
@@ -16,6 +15,22 @@
                 label: "Enable the cookie consent popup"|t('convergine-cookiebuddy'),
                 name: 'isEnabled',
                 on: settings.isEnabled,
+            }) }}
+            {{ forms.lightswitchField({
+                label: "Enable non-essential cookie categories by default"|t('convergine-cookiebuddy'),
+                instructions: "Turn off for opt-in jurisdictions (e.g. Australia, EU): the Performance and Targeting switches start OFF in the preferences modal, so visitors have to turn them on themselves."|t('convergine-cookiebuddy'),
+                name: 'categoriesEnabledByDefault',
+                on: settings.categoriesEnabledByDefault,
+            }) }}
+            {{ forms.textField({
+                label: "Consent Revision"|t('convergine-cookiebuddy'),
+                instructions: "Increase this number after significant changes to your privacy policy or the cookies you use. All visitors' existing consents become invalid and the consent banner is shown again."|t('convergine-cookiebuddy'),
+                name: 'consentRevision',
+                value: settings.consentRevision,
+                type: 'number',
+                min: 0,
+                step: 1,
+                size: 5,
             }) }}
         {% endnamespace %}
     </div>

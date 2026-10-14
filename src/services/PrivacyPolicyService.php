@@ -97,18 +97,44 @@ class PrivacyPolicyService extends Component
 
         // Insert new published version
         $record = new LegalPolicyDocument();
-        $record->type           = 'privacy-policy';
+        $record->type   = 'privacy-policy';
+        $record->status = 'published';
+        $this->populateRecord($record, $model, $renderedHtml);
+        $record->save(false);
+
+        return (int)$record->id;
+    }
+
+    /**
+     * Overwrite an existing policy document in place with new wizard data.
+     * Keeps the ID (so existing embed snippets keep working), type and status.
+     *
+     * @return bool  False if the document was not found
+     */
+    public function updateDocument(int $documentId, PrivacyPolicyModel $model, string $renderedHtml): bool
+    {
+        $record = LegalPolicyDocument::findOne($documentId);
+        if (!$record) {
+            return false;
+        }
+
+        $this->populateRecord($record, $model, $renderedHtml);
+
+        return $record->save(false);
+    }
+
+    /**
+     * Copy model data and rendered HTML onto a document record.
+     */
+    private function populateRecord(LegalPolicyDocument $record, PrivacyPolicyModel $model, string $renderedHtml): void
+    {
         $record->version        = $model->policy_version;
         $record->website_url    = $model->website_url;
         $record->company_name   = $model->company_name;
         $record->settings_json  = json_encode($model->toStorageArray());
         $record->rendered_html  = $renderedHtml;
         $record->language       = $model->policy_language;
-        $record->status         = 'published';
         $record->effective_date = $model->effective_date ?: null;
-        $record->save(false);
-
-        return (int)$record->id;
     }
 
     /**

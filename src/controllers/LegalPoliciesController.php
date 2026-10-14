@@ -98,6 +98,61 @@ class LegalPoliciesController extends Controller
     }
 
     /**
+     * Renders the wizard prefilled with a saved policy's answers for editing.
+     */
+    public function actionEdit(): Response
+    {
+        $id = (int)Craft::$app->request->get('id');
+
+        $document = LegalPolicyDocument::findOne($id);
+
+        if (!$document) {
+            throw new NotFoundHttpException('Policy document not found.');
+        }
+
+        // The date field reads model.effective_date rather than submitted values,
+        // so the restored model is passed too.
+        return $this->renderTemplate('convergine-cookiebuddy/legal/_wizard', [
+            'steps'      => PrivacyPolicyQuestions::getSteps(),
+            'model'      => CookieBuddyPlugin::getInstance()->privacyPolicy->loadDocument($id),
+            'submitted'  => json_decode($document->settings_json, true) ?: [],
+            'documentId' => $document->id,
+        ]);
+    }
+
+    /**
+     * POST handler: re-renders an existing policy from edited wizard data and
+     * overwrites it in place, keeping its ID so embed snippets stay valid.
+     */
+    public function actionUpdate(): Response
+    {
+        $this->requirePostRequest();
+
+        $id = (int)Craft::$app->request->post('id');
+
+        if (!LegalPolicyDocument::find()->where(['id' => $id])->exists()) {
+            throw new NotFoundHttpException('Policy document not found.');
+        }
+
+        $postData = Craft::$app->request->post();
+        $model    = PrivacyPolicyModel::fromWizardData($postData);
+        if (!$model->validate()) {
+            return $this->renderTemplate('convergine-cookiebuddy/legal/_wizard', [
+                'steps'      => PrivacyPolicyQuestions::getSteps(),
+                'model'      => $model,
+                'submitted'  => $postData,
+                'documentId' => $id,
+            ]);
+        }
+
+        $service = CookieBuddyPlugin::getInstance()->privacyPolicy;
+        $service->updateDocument($id, $model, $service->render($model));
+
+        Craft::$app->session->setNotice(Craft::t('convergine-cookiebuddy', 'Privacy policy updated.'));
+        return $this->redirect(UrlHelper::cpUrl('convergine-cookiebuddy/legal/view', ['id' => $id]));
+    }
+
+    /**
      * Deletes a policy document and redirects to the index.
      */
     public function actionDelete(): Response

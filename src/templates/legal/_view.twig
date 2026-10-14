@@ -23,6 +23,9 @@
                 <button type="button" class="btn" id="copy-policy-text-btn" onclick="cbCopyPolicyText()">
                     {{ "Copy Policy Text"|t('convergine-cookiebuddy') }}
                 </button>
+                <a href="{{ url('convergine-cookiebuddy/legal/edit', {id: document.id}) }}" class="btn">
+                    {{ "Edit Policy"|t('convergine-cookiebuddy') }}
+                </a>
                 <a href="{{ url('convergine-cookiebuddy/legal/privacy-policy/new') }}" class="btn submit">
                     {{ "Generate New Policy"|t('convergine-cookiebuddy') }}
                 </a>
@@ -37,7 +40,7 @@
             <div class="data">
                 <span class="label">{{ "Status"|t('convergine-cookiebuddy') }}</span>
                 <span class="value">
-                    <span class="status {% if document.status == 'published' %}green{% endif %}"></span>
+                    <span class="status {% if document.status == 'published' %}green{% else %}warning{% endif %}"></span>
                     {{ document.status|capitalize }}
                 </span>
             </div>

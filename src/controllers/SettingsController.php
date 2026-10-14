@@ -36,6 +36,29 @@ class SettingsController extends Controller {
 		] );
 	}
 
+	/**
+	 * Saves the settings posted from one of the settings pages.
+	 *
+	 * Craft 5.8.22+ and 4.16.18+ store only the posted settings, and each page posts its own
+	 * subset, so plugins/save-plugin-settings would reset the other pages' settings. Start from
+	 * the current settings instead, leaving out values that come from a config file.
+	 */
+	public function actionSave(): ?Response {
+		$this->requirePostRequest();
+		$this->requireAdmin();
+
+		$plugin     = CookieBuddyPlugin::getInstance();
+		$fileConfig = \Craft::$app->getConfig()->getConfigFromFile( $plugin->handle );
+		$settings   = array_merge(
+			array_diff_key( $plugin->getSettings()->toArray(), $fileConfig ),
+			$this->request->getBodyParam( 'settings', [] )
+		);
+
+		return \Craft::$app->getPlugins()->savePluginSettings( $plugin, $settings )
+			? $this->asSuccess( \Craft::t( 'app', 'Plugin settings saved.' ) )
+			: $this->asFailure( \Craft::t( 'app', 'Couldn’t save plugin settings.' ), routeParams: [ 'plugin' => $plugin ] );
+	}
+
 	public function actionCustomization(): Response {
 		$settings = CookieBuddyPlugin::getInstance()->getSettings();
 

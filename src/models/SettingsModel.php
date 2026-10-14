@@ -9,15 +9,24 @@ class SettingsModel extends Model {
 
     public bool $sendGtag = true;
 
+    // Off = opt-in: the Performance/Targeting switches start OFF in the preferences modal.
+    public bool $categoriesEnabledByDefault = true;
+
+    // Bumping this invalidates every stored consent and shows the banner again.
+    public int $consentRevision = 0;
+
     public string $title = "Hello visitor, it's cookie time!";
     public string $description = "Cookies don't store your personal information and don't know who you are. Your browsing on our website is anonymous. It is important to note that cookies cannot harm your device.";
     public string $footer = "<a href=\"/privacy\">Privacy Policy</a>";
+
+    public string $theme = 'light';
 
     public string $consentLayout = 'box';
     public string $consentPosition = 'bottom right';
     public bool $consentEqualWeightButtons = true;
     public bool $consentFlipButtons = false;
     public bool $consentShowRejectAll = false;
+    public string $revisionMessage = "We've updated our privacy and cookie policy. Please review and confirm your choices.";
 
     public string $internalTitle = "Cookie Usage";
     public string $internalDescription = "A cookie is a small text file sent to your browser and stored on your device by a website you visit. Cookies may save information about the pages you visit and the devices you use, which in return can give us more insight about how you use our website so we can improve its usability and deliver more relevant content.";
@@ -56,6 +65,10 @@ class SettingsModel extends Model {
 		if(\Craft::$app->request->getBodyParam('settings') && isset($values['customMessages'])){
 			$currentSettings = CookieBuddyPlugin::getInstance()->getSettings();
 			$values['customMessages'] = array_merge($currentSettings->customMessages,$values['customMessages']);
+		}
+		// Posted as a string; an empty field would otherwise fail the int property.
+		if(is_array($values) && array_key_exists('consentRevision', $values)){
+			$values['consentRevision'] = max(0, (int)$values['consentRevision']);
 		}
 		parent::setAttributes($values, $safeOnly);
 	}

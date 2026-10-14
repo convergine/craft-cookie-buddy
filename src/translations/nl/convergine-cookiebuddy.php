@@ -12,6 +12,12 @@
 	'Popup Title' => 'Popup-titel',
 	'Popup Description' => 'Popup-beschrijving',
 	'Footer' => 'Voettekst',
+	'Theme' => 'Thema',
+	'Light' => 'Licht',
+	'Dark' => 'Donker',
+	'Light Funky' => 'Licht Funky',
+	'Elegant Black' => 'Elegant Zwart',
+	'Applies to both the consent banner and the preferences modal.' => 'Geldt voor zowel de toestemmingsbanner als het voorkeurenvenster.',
 	'Layout' => 'Indeling',
 	'Position' => 'Positie',
 	'Equal Weight Buttons' => 'Knoppen met gelijke grootte',
@@ -25,11 +31,17 @@
 	'More Description' => 'Meer beschrijving',
 
 	'Enable the cookie consent popup' => 'Activeer de cookie-toestemmingspopup',
+	'Enable non-essential cookie categories by default' => 'Niet-essentiële cookiecategorieën standaard inschakelen',
+	'Turn off for opt-in jurisdictions (e.g. Australia, EU): the Performance and Targeting switches start OFF in the preferences modal, so visitors have to turn them on themselves.' => 'Schakel dit uit in rechtsgebieden met voorafgaande toestemming (bijv. Australië, EU): de schakelaars Prestaties en Targeting staan in het voorkeurenvenster UIT, zodat bezoekers ze zelf moeten aanzetten.',
 	'Send Consent Signals to Google Analytics' => 'Stuur toestemmingssignalen naar Google Analytics',
 	'If enabled, plugin will send consent signals to Google based on visitors selection, which includes analytics_storage, ad_storage, ad_user_data, ad_personalization signals.' => 'Indien ingeschakeld, stuurt de plugin toestemmingssignalen naar Google op basis van de keuze van de bezoeker, waaronder analytics_storage, ad_storage, ad_user_data en ad_personalization.',
 
 	//frontend popup strings
 	"Show a 'Reject All' button on the initial banner" => "Toon een knop 'Alles weigeren' op de eerste banner",
+	'Consent Revision' => 'Toestemmingsrevisie',
+	'Increase this number after significant changes to your privacy policy or the cookies you use. All visitors\' existing consents become invalid and the consent banner is shown again.' => 'Verhoog dit getal na belangrijke wijzigingen in uw privacybeleid of de gebruikte cookies. Alle bestaande toestemmingen van bezoekers worden ongeldig en de toestemmingsbanner wordt opnieuw getoond.',
+	'Revision Message' => 'Revisiebericht',
+	'Added to the popup description for returning visitors whose consent was reset by a new Consent Revision (see General settings). Leave empty to show nothing.' => 'Wordt toegevoegd aan de popupbeschrijving voor terugkerende bezoekers van wie de toestemming is gereset door een nieuwe toestemmingsrevisie (zie Algemene instellingen). Laat leeg om niets te tonen.',
 	"Required for UK/EU compliance: 'Reject All' is shown with equal prominence to 'Accept All' on the first banner." => "Vereist voor naleving in het VK/de EU: 'Alles weigeren' wordt even prominent weergegeven als 'Alles accepteren' op de eerste banner.",
 	'Accept all' => 'Alles accepteren',
 	'Manage preferences' => 'Voorkeuren beheren',
@@ -643,4 +655,13 @@
 		=> 'Wij verwerken bovenstaande gegevens op basis van onze legitieme belangen, contractuele noodzaak, wettelijke verplichtingen of uw toestemming, naargelang van toepassing op elke activiteit.',
 	'Note: One or more of your selected third-party services (e.g. Google, Meta, AWS) process data outside the EEA. Please enable this toggle and specify the safeguards you rely on.'
 		=> 'Opmerking: een of meer van uw geselecteerde diensten van derden (bijv. Google, Meta, AWS) verwerken gegevens buiten de EER. Schakel deze schakelaar in en geef de waarborgen op waarvan u gebruikmaakt.',
+
+	// Privacy Policy — edit
+	'Edit'                                    => 'Bewerken',
+	'Edit Policy'                             => 'Beleid bewerken',
+	'Edit Privacy Policy'                     => 'Privacybeleid bewerken',
+	'Save Changes'                            => 'Wijzigingen opslaan',
+	'Privacy policy updated.'                 => 'Privacybeleid bijgewerkt.',
+	'Update the answers below and save to regenerate this policy in place. Its embed code stays the same. Consider bumping the version and effective date for substantive changes.'
+		=> 'Werk de antwoorden hieronder bij en sla op om dit beleid ter plekke opnieuw te genereren. De insluitcode blijft hetzelfde. Overweeg bij inhoudelijke wijzigingen de versie te verhogen en de ingangsdatum aan te passen.',
 ];

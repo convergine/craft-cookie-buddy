@@ -34,8 +34,7 @@
  {% endblock %}
 
 {% block content %}
-    {{ actionInput('plugins/save-plugin-settings') }}
-    {{ hiddenInput('pluginHandle', 'convergine-cookiebuddy') }}
+    {{ actionInput('convergine-cookiebuddy/settings/save') }}
 
     <div id="fields">
         <div id="tab01-popup" class="flex-fields" data-id="tab01-popup" role="tabpanel" aria-labelledby="tab-tab01-popup">
@@ -65,9 +64,29 @@
                     name: 'consentShowRejectAll',
                     on: settings.getCustomMessage('consentShowRejectAll', currentSiteHandle),
                 }) }}
+                {{ forms.textareaField({
+                    label: "Revision Message"|t('convergine-cookiebuddy'),
+                    instructions: "Added to the popup description for returning visitors whose consent was reset by a new Consent Revision (see General settings). Leave empty to show nothing."|t('convergine-cookiebuddy'),
+                    name: 'revisionMessage',
+                    value: settings.getCustomMessage('revisionMessage',currentSiteHandle),
+                    rows:3,
+                    translatable:true
+                }) }}
             {% endnamespace %}
             {% namespace 'settings' %}
                 <hr>
+                {{ forms.selectField({
+                    label: "Theme"|t('convergine-cookiebuddy'),
+                    instructions: "Applies to both the consent banner and the preferences modal."|t('convergine-cookiebuddy'),
+                    name: 'theme',
+                    value: settings.theme,
+                    options: {
+                        "light": "Light"|t('convergine-cookiebuddy'),
+                        "dark": "Dark"|t('convergine-cookiebuddy'),
+                        "light-funky": "Light Funky"|t('convergine-cookiebuddy'),
+                        "elegant-black": "Elegant Black"|t('convergine-cookiebuddy'),
+                    }
+                }) }}
                 {{ forms.selectField({
                     label: "Layout"|t('convergine-cookiebuddy'),
                     name: 'consentLayout',

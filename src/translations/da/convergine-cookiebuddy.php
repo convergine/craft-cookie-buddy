@@ -12,6 +12,12 @@
 	'Popup Title' => 'Popup-titel',
 	'Popup Description' => 'Popup-beskrivelse',
 	'Footer' => 'Sidefod',
+	'Theme' => 'Tema',
+	'Light' => 'Lys',
+	'Dark' => 'Mørk',
+	'Light Funky' => 'Lys Funky',
+	'Elegant Black' => 'Elegant Sort',
+	'Applies to both the consent banner and the preferences modal.' => 'Gælder både samtykkebanneret og præferencevinduet.',
 	'Layout' => 'Layout',
 	'Position' => 'Placering',
 	'Equal Weight Buttons' => 'Knapper med samme vægt',
@@ -25,11 +31,17 @@
 	'More Description' => 'Flere oplysninger – beskrivelse',
 
 	'Enable the cookie consent popup' => 'Aktivér popup til cookie-samtykke',
+	'Enable non-essential cookie categories by default' => 'Aktivér ikke-nødvendige cookiekategorier som standard',
+	'Turn off for opt-in jurisdictions (e.g. Australia, EU): the Performance and Targeting switches start OFF in the preferences modal, so visitors have to turn them on themselves.' => 'Slå fra i lande med krav om aktivt samtykke (f.eks. Australien, EU): knapperne Ydelse og Målretning starter som FRA i præferencevinduet, så besøgende selv skal slå dem til.',
 	'Send Consent Signals to Google Analytics' => 'Send samtykkesignaler til Google Analytics',
 	'If enabled, plugin will send consent signals to Google based on visitors selection, which includes analytics_storage, ad_storage, ad_user_data, ad_personalization signals.' => 'Hvis aktiveret, sender plugin’et samtykkesignaler til Google baseret på besøgendes valg, herunder analytics_storage, ad_storage, ad_user_data og ad_personalization.',
 
 	//frontend popup strings
 	"Show a 'Reject All' button on the initial banner" => "Vis en 'Afvis alle'-knap på det første banner",
+	'Consent Revision' => 'Samtykkerevision',
+	'Increase this number after significant changes to your privacy policy or the cookies you use. All visitors\' existing consents become invalid and the consent banner is shown again.' => 'Forøg dette tal efter væsentlige ændringer i din privatlivspolitik eller de cookies, du bruger. Alle besøgendes eksisterende samtykker bliver ugyldige, og samtykkebanneret vises igen.',
+	'Revision Message' => 'Revisionsbesked',
+	'Added to the popup description for returning visitors whose consent was reset by a new Consent Revision (see General settings). Leave empty to show nothing.' => 'Tilføjes til popup-beskrivelsen for tilbagevendende besøgende, hvis samtykke blev nulstillet af en ny samtykkerevision (se Generelle indstillinger). Lad feltet være tomt for ikke at vise noget.',
 	"Required for UK/EU compliance: 'Reject All' is shown with equal prominence to 'Accept All' on the first banner." => "Påkrævet for UK/EU-overholdelse: 'Afvis alle' vises lige så tydeligt som 'Accepter alle' på det første banner.",
 	'Accept all' => 'Accepter alle',
 	'Manage preferences' => 'Administrer præferencer',
@@ -469,4 +481,13 @@
 		=> 'Vi behandler ovenstående data på grundlag af vores legitime interesser, kontraktlig nødvendighed, juridiske forpligtelser eller dit samtykke, alt efter hvad der er gældende for den pågældende aktivitet.',
 	'Note: One or more of your selected third-party services (e.g. Google, Meta, AWS) process data outside the EEA. Please enable this toggle and specify the safeguards you rely on.'
 		=> 'Bemærk: En eller flere af dine valgte tredjepartstjenester (f.eks. Google, Meta, AWS) behandler data uden for EØS. Aktiver venligst denne kontakt og angiv de garantier, du benytter dig af.',
+
+	// Privacy Policy — edit
+	'Edit'                                    => 'Rediger',
+	'Edit Policy'                             => 'Rediger politik',
+	'Edit Privacy Policy'                     => 'Rediger privatlivspolitik',
+	'Save Changes'                            => 'Gem ændringer',
+	'Privacy policy updated.'                 => 'Privatlivspolitikken er opdateret.',
+	'Update the answers below and save to regenerate this policy in place. Its embed code stays the same. Consider bumping the version and effective date for substantive changes.'
+		=> 'Opdater svarene nedenfor, og gem for at generere politikken igen på samme sted. Indlejringskoden forbliver den samme. Overvej at øge versionsnummeret og ændre ikrafttrædelsesdatoen ved væsentlige ændringer.',
 ];

@@ -1,5 +1,18 @@
 # Cookie Buddy - Changelog
 
+## 1.1.0 - 2026-10-14
+### Added
+- Added pre-made design themes: Light, Dark, Light Funky and Elegant Black.
+- Added an option to turn non-essential cookie categories off by default, for opt-in jurisdictions.
+- Added a consent revision setting that shows the consent banner again after privacy policy or cookie changes, with an optional per-site message.
+- Added the ability to edit generated privacy policies. [Issue #8](https://github.com/convergine/craft-cookie-buddy/issues/8)
+
+### Fixed
+- Fixed the privacy policy effective date having its day and month swapped in d/m/Y locales. [Issue #7](https://github.com/convergine/craft-cookie-buddy/issues/7)
+- Fixed an error when saving a privacy policy with an invalid effective date.
+- Fixed settings on one settings page being reset when saving another, on Craft 5.8.22+ and 4.16.18+.
+- Fixed missing `legal_policy_documents` database table on sites first installed on 1.0.7 or updated from 1.0.6 and earlier. [Issue #6](https://github.com/convergine/craft-cookie-buddy/issues/6)
+
 ## 1.0.9 - 2026-07-15
 ### Added
 - Added an optional "Reject All" button on the initial consent banner, shown with equal prominence to "Accept All" for UK/EU compliance. Off by default, enabled per-site under Customization → Popup.

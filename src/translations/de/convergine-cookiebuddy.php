@@ -12,6 +12,12 @@
 	'Popup Title' => 'Popup-Titel',
 	'Popup Description' => 'Popup-Beschreibung',
 	'Footer' => 'Fußzeile',
+	'Theme' => 'Design',
+	'Light' => 'Hell',
+	'Dark' => 'Dunkel',
+	'Light Funky' => 'Hell Funky',
+	'Elegant Black' => 'Elegantes Schwarz',
+	'Applies to both the consent banner and the preferences modal.' => 'Gilt sowohl für das Einwilligungsbanner als auch für das Einstellungsfenster.',
 	'Layout' => 'Layout',
 	'Position' => 'Position',
 	'Equal Weight Buttons' => 'Gleich große Schaltflächen',
@@ -25,11 +31,17 @@
 	'More Description' => 'Weitere Beschreibung',
 
 	'Enable the cookie consent popup' => 'Cookie-Einwilligungs-Popup aktivieren',
+	'Enable non-essential cookie categories by default' => 'Nicht notwendige Cookie-Kategorien standardmäßig aktivieren',
+	'Turn off for opt-in jurisdictions (e.g. Australia, EU): the Performance and Targeting switches start OFF in the preferences modal, so visitors have to turn them on themselves.' => 'Für Opt-in-Rechtsräume (z. B. Australien, EU) deaktivieren: Die Schalter Leistung und Targeting sind im Einstellungsfenster zunächst AUS, sodass Besucher sie selbst einschalten müssen.',
 	'Send Consent Signals to Google Analytics' => 'Einwilligungssignale an Google Analytics senden',
 	'If enabled, plugin will send consent signals to Google based on visitors selection, which includes analytics_storage, ad_storage, ad_user_data, ad_personalization signals.' => 'Wenn aktiviert, sendet das Plugin Einwilligungssignale an Google basierend auf der Auswahl der Besucher, einschließlich analytics_storage, ad_storage, ad_user_data und ad_personalization.',
 
 	//frontend popup strings
 	"Show a 'Reject All' button on the initial banner" => "Eine Schaltfläche „Alle ablehnen“ im ersten Banner anzeigen",
+	'Consent Revision' => 'Einwilligungsrevision',
+	'Increase this number after significant changes to your privacy policy or the cookies you use. All visitors\' existing consents become invalid and the consent banner is shown again.' => 'Erhöhen Sie diese Zahl nach wesentlichen Änderungen Ihrer Datenschutzerklärung oder der verwendeten Cookies. Alle bestehenden Einwilligungen der Besucher werden ungültig und das Einwilligungsbanner wird erneut angezeigt.',
+	'Revision Message' => 'Revisionshinweis',
+	'Added to the popup description for returning visitors whose consent was reset by a new Consent Revision (see General settings). Leave empty to show nothing.' => 'Wird für wiederkehrende Besucher, deren Einwilligung durch eine neue Einwilligungsrevision zurückgesetzt wurde, an die Popup-Beschreibung angehängt (siehe Allgemeine Einstellungen). Leer lassen, um nichts anzuzeigen.',
 	"Required for UK/EU compliance: 'Reject All' is shown with equal prominence to 'Accept All' on the first banner." => "Erforderlich für die UK-/EU-Konformität: „Alle ablehnen“ wird im ersten Banner ebenso deutlich dargestellt wie „Alle akzeptieren“.",
 	'Accept all' => 'Alle akzeptieren',
 	'Manage preferences' => 'Einstellungen verwalten',
@@ -703,4 +715,13 @@
 		=> 'Wir verarbeiten die oben genannten Daten auf der Grundlage unserer berechtigten Interessen, vertraglicher Notwendigkeit, gesetzlicher Verpflichtungen oder Ihrer Einwilligung, je nach Anwendbarkeit auf die jeweilige Tätigkeit.',
 	'Note: One or more of your selected third-party services (e.g. Google, Meta, AWS) process data outside the EEA. Please enable this toggle and specify the safeguards you rely on.'
 		=> 'Hinweis: Einer oder mehrere Ihrer ausgewählten Drittanbieter-Dienste (z. B. Google, Meta, AWS) verarbeiten Daten außerhalb des EWR. Bitte aktivieren Sie diesen Schalter und geben Sie die von Ihnen genutzten Schutzmaßnahmen an.',
+
+	// Privacy Policy — edit
+	'Edit'                                    => 'Bearbeiten',
+	'Edit Policy'                             => 'Richtlinie bearbeiten',
+	'Edit Privacy Policy'                     => 'Datenschutzerklärung bearbeiten',
+	'Save Changes'                            => 'Änderungen speichern',
+	'Privacy policy updated.'                 => 'Datenschutzerklärung aktualisiert.',
+	'Update the answers below and save to regenerate this policy in place. Its embed code stays the same. Consider bumping the version and effective date for substantive changes.'
+		=> 'Passen Sie die Antworten unten an und speichern Sie, um diese Richtlinie an Ort und Stelle neu zu erstellen. Der Einbettungscode bleibt unverändert. Erhöhen Sie bei wesentlichen Änderungen gegebenenfalls die Version und das Datum des Inkrafttretens.',
 ];

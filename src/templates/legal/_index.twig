@@ -47,6 +47,10 @@
                                 {{ "View"|t('convergine-cookiebuddy') }}
                             </a>
                             &nbsp;
+                            <a href="{{ url('convergine-cookiebuddy/legal/edit', {id: doc.id}) }}" class="btn small">
+                                {{ "Edit"|t('convergine-cookiebuddy') }}
+                            </a>
+                            &nbsp;
                             <form method="post" style="display:inline" onsubmit="return confirm('{{ "Delete this policy?"|t('convergine-cookiebuddy') }}')">
                                 {{ csrfInput() }}
                                 {{ actionInput('convergine-cookiebuddy/legal-policies/delete') }}

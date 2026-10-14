@@ -12,6 +12,12 @@
 	'Popup Title'=>'Popup Title',
 	'Popup Description'=>'Popup Description',
 	'Footer'=>'Footer',
+	'Theme'=>'Theme',
+	'Light'=>'Light',
+	'Dark'=>'Dark',
+	'Light Funky'=>'Light Funky',
+	'Elegant Black'=>'Elegant Black',
+	'Applies to both the consent banner and the preferences modal.'=>'Applies to both the consent banner and the preferences modal.',
 	'Layout'=>'Layout',
 	'Position'=>'Position',
 	'Equal Weight Buttons'=>'Equal Weight Buttons',
@@ -25,9 +31,15 @@
 	'More Description'=>'More Description',
 
 	'Enable the cookie consent popup'=>'Enable the cookie consent popup',
+	'Enable non-essential cookie categories by default' => 'Enable non-essential cookie categories by default',
+	'Turn off for opt-in jurisdictions (e.g. Australia, EU): the Performance and Targeting switches start OFF in the preferences modal, so visitors have to turn them on themselves.' => 'Turn off for opt-in jurisdictions (e.g. Australia, EU): the Performance and Targeting switches start OFF in the preferences modal, so visitors have to turn them on themselves.',
 	'Send Consent Signals to Google Analytics'=>'Send Consent Signals to Google Analytics',
 	'If enabled, plugin will send consent signals to Google based on visitors selection, which includes analytics_storage, ad_storage, ad_user_data, ad_personalization signals.'=>'If enabled, plugin will send consent signals to Google based on visitors selection, which includes analytics_storage, ad_storage, ad_user_data, ad_personalization signals.',
 	"Show a 'Reject All' button on the initial banner"=>"Show a 'Reject All' button on the initial banner",
+	'Consent Revision' => 'Consent Revision',
+	'Increase this number after significant changes to your privacy policy or the cookies you use. All visitors\' existing consents become invalid and the consent banner is shown again.' => 'Increase this number after significant changes to your privacy policy or the cookies you use. All visitors\' existing consents become invalid and the consent banner is shown again.',
+	'Revision Message' => 'Revision Message',
+	'Added to the popup description for returning visitors whose consent was reset by a new Consent Revision (see General settings). Leave empty to show nothing.' => 'Added to the popup description for returning visitors whose consent was reset by a new Consent Revision (see General settings). Leave empty to show nothing.',
 	"Required for UK/EU compliance: 'Reject All' is shown with equal prominence to 'Accept All' on the first banner."=>"Required for UK/EU compliance: 'Reject All' is shown with equal prominence to 'Accept All' on the first banner.",
 
 	//frontend popup strings

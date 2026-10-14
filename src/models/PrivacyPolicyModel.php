@@ -4,6 +4,7 @@ namespace convergine\cookiebuddy\models;
 
 use Craft;
 use craft\base\Model;
+use craft\helpers\DateTimeHelper;
 use convergine\cookiebuddy\questions\PrivacyPolicyQuestions;
 use DateTime;
 
@@ -190,6 +191,9 @@ class PrivacyPolicyModel extends Model
                 'rule' => ['string'],
             ],
 
+            // Date fields — must already be normalised to Y-m-d for the date column
+            ['effective_date', 'date', 'format' => 'php:Y-m-d'],
+
             // Select/in rules
             ['retention_period', 'in', 'range' => ['necessary', '1_year', '2_years', '3_years', '5_years', '7_years', 'custom']],
             ['rights_contact_method', 'in', 'range' => ['email', 'form', 'portal']],
@@ -245,17 +249,20 @@ class PrivacyPolicyModel extends Model
             }
         }
 
-        // Craft dateField submits as name[date] in locale format (e.g. '3/3/2026').
-        // Normalise to Y-m-d for MySQL.
-        $rawDate = null;
-        if (!empty($data['effective_date']['date'])) {
-            $rawDate = (string)$data['effective_date']['date'];
-        } elseif (isset($data['effective_date']) && is_string($data['effective_date']) && $data['effective_date'] !== '') {
-            $rawDate = $data['effective_date'];
-        }
-        if ($rawDate !== null) {
-            $ts = strtotime($rawDate);
-            $model->effective_date = $ts !== false ? date('Y-m-d', $ts) : $rawDate;
+        // Craft dateField submits as name[date] in the formatting locale's short format
+        // ('11/08/2026' = 11 Aug for en-GB), alongside name[locale] and name[timezone].
+        // DateTimeHelper honours those; strtotime() would read d/m/Y as the US m/d/Y.
+        // It also accepts the plain 'Y-m-d' string stored in settings_json.
+        $rawDate = $data['effective_date'] ?? null;
+        if (!empty($rawDate)) {
+            $typedDate = is_array($rawDate) ? (string)($rawDate['date'] ?? '') : (string)$rawDate;
+            $date = DateTimeHelper::toDateTime($rawDate, true);
+            if ($date !== false && !self::dateMatchesInput($date, $typedDate)) {
+                $date = false;
+            }
+            // Unparsable input is kept as-is so the 'date' rule can report it,
+            // instead of reaching the date column and failing in MySQL.
+            $model->effective_date = $date !== false ? $date->format('Y-m-d') : $typedDate;
         }
 
         // Boolean fields
@@ -367,5 +374,31 @@ class PrivacyPolicyModel extends Model
     public static function fromStorageArray(array $data): self
     {
         return self::fromWizardData($data);
+    }
+
+    /**
+     * PHP's date parsing rolls impossible dates over ('31/02/2026' becomes 3 March).
+     * When the input is three numbers (day, month, year in any order), they must
+     * match the parsed date, so a rolled-over date fails validation instead of
+     * being saved silently. A two-digit year matches too ('11/8/26').
+     */
+    private static function dateMatchesInput(DateTime $date, string $typed): bool
+    {
+        if (preg_match_all('/\d+/', $typed, $matches) !== 3) {
+            return true;
+        }
+
+        $typedParts = array_map('intval', $matches[0]);
+        sort($typedParts);
+
+        foreach (['Y', 'y'] as $yearFormat) {
+            $parsedParts = [(int)$date->format('j'), (int)$date->format('n'), (int)$date->format($yearFormat)];
+            sort($parsedParts);
+            if ($parsedParts === $typedParts) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
